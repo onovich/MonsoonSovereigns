@@ -17,24 +17,24 @@
   },
   "current_lead_thread": {
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "task_id": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+    "task_id": "RR0-ROADMAP-ADOPTION-001",
     "task_ids": [
-      "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001"
+      "RR0-ROADMAP-ADOPTION-001"
     ],
-    "status": "active_ready_for_strategic_terrain_renderer_interaction_start",
+    "status": "active_r0_roadmap_adoption_review",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
-    "branch_or_worktree": "codex/close-m7-strategic-terrain-fixture",
-    "updated_at": "2026-07-01T23:21:47.0897812+08:00",
+    "branch_or_worktree": "codex/rr0-roadmap-adoption",
+    "updated_at": "2026-07-10T07:30:00.000Z",
     "last_integrated_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
-    "last_main_commit": "851d36d9192b77be15e236da386e8c01f053c22f",
-    "next_ready_tasks": [
-      "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001"
+    "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
+    "next_ready_tasks_after_acceptance": [
+      "RR0-REPOSITORY-STATE-RECONCILIATION-001"
     ],
-    "next_action": "Start M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 as the next READY M7 task."
+    "next_action": "Route RR0-ROADMAP-ADOPTION-001 REVIEW handoff to qa_reviewer."
   },
   "retired_lead_threads": [
     {
@@ -1951,6 +1951,16 @@
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
       "status": "closed_after_accept_review_and_main_integration",
       "closed_at": "2026-06-30T05:51:50.925Z"
+    },
+    {
+      "thread_id": "019f1f02-6d7b-72a0-86db-8945be6b0606",
+      "role": "client_engineer",
+      "task_id": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+      "migration_status": "stale_not_found_closed",
+      "close_agent_result": "not_found",
+      "accepted_task_reopened": false,
+      "fabricated_close_success": false,
+      "recorded_at": "2026-07-10T07:30:00.000Z"
     }
   ],
   "active_threads": [
@@ -5058,8 +5068,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Start M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 as the next READY M7 task.",
-  "current_task_status": "READY",
+  "next_machine_action": "Route RR0-ROADMAP-ADOPTION-001 to qa_reviewer; after acceptance start RR0-REPOSITORY-STATE-RECONCILIATION-001.",
+  "current_task_status": "REVIEW",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",
@@ -5118,11 +5128,9 @@
     "strategic_terrain_recovery_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
     "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock."
   },
-  "current_milestone": "M7",
-  "last_main_commit": "851d36d9192b77be15e236da386e8c01f053c22f",
-  "next_ready_tasks": [
-    "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001"
-  ],
+  "current_milestone": "R0",
+  "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
+  "next_ready_tasks": [],
   "m7_strategic_terrain_recovery": {
     "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
     "status": "CLOSED",
@@ -5285,7 +5293,7 @@
   },
   "m7_strategic_terrain_renderer_interaction": {
     "task_id": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
-    "status": "READY",
+    "status": "PARTIAL_RETAINED_NON_ACTIVE_EVIDENCE",
     "owner_role": "client_engineer",
     "reviewer_role": "systems_architect",
     "required_reviewers": [
@@ -5298,7 +5306,26 @@
     "ready_after_main_commit": "851d36d9192b77be15e236da386e8c01f053c22f",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "updated_at": "2026-07-01T23:21:47.0897812+08:00",
-    "next_action": "Start renderer/interaction replacement work using accepted terrain-route-node schema and fixture."
+    "updated_at": "2026-07-10T07:30:00.000Z",
+    "next_action": "Start renderer/interaction replacement work using accepted terrain-route-node schema and fixture.",
+    "operational_active": false,
+    "superseded_by_task": "RR0-ROADMAP-ADOPTION-001",
+    "stale_client_thread_id": "019f1f02-6d7b-72a0-86db-8945be6b0606",
+    "stale_client_thread_status": "stale_not_found_closed"
+  },
+  "r0_roadmap_adoption": {
+    "status": "REVIEW",
+    "task_id": "RR0-ROADMAP-ADOPTION-001",
+    "accepted_roadmap": "docs/29-product-recovery-roadmap.md",
+    "accepted_roadmap_commit": "d7da7f61a71695211a664c6a13a5cfc533174b27",
+    "base_origin_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
+    "downstream_tasks_after_acceptance": [
+      "RR0-REPOSITORY-STATE-RECONCILIATION-001",
+      "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+      "RR0-STATUS-LEDGER-COMPACTION-001",
+      "RR0-EXIT-VALIDATION-001"
+    ],
+    "r1_tasks_created": false,
+    "updated_at": "2026-07-10T07:30:00.000Z"
   }
 }

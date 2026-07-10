@@ -1,0 +1,122 @@
+{
+  "blockers": [],
+  "decisions": [
+    {
+      "id": "FORWARD_ROADMAP_AUTHORITY",
+      "decision": "docs/29-product-recovery-roadmap.md remains the accepted forward product-maturity roadmap; docs/11 and docs/23 now route forward maturity to R0-R8."
+    },
+    {
+      "id": "HISTORICAL_GATE_PRESERVATION",
+      "decision": "M0-M6 Gate documents and historical outcomes are preserved as historical engineering evidence, not rewritten."
+    },
+    {
+      "id": "M7_RENDERER_NON_ACTIVE",
+      "decision": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 is PARTIAL retained non-active evidence, not operational READY/IN_PROGRESS work."
+    },
+    {
+      "id": "MINIMAL_R0_GRAPH",
+      "decision": "Created exactly four R0 downstream tasks: repository state reconciliation, production fixture/no-op audit, status ledger compaction, and R0 exit validation. No R1 implementation tasks were created."
+    },
+    {
+      "id": "THREAD_REGISTRY_REALITY",
+      "decision": "Unique active lead remains 019eff50-c69d-7612-a90b-7024a47e0af5. Client thread 019f1f02-6d7b-72a0-86db-8945be6b0606 is recorded as stale/not-found/closed from real close_agent not_found result, with no fabricated close success."
+    },
+    {
+      "id": "GOAL_MODE_CONTINUITY",
+      "decision": "Autonomous Goal Mode remains enabled and human_gate.required remains false."
+    }
+  ],
+  "risks": [
+    {
+      "summary": "taskctl ready is intentionally empty until QA/lead accept RR0-ROADMAP-ADOPTION-001 because downstream RR0 tasks depend on this task.",
+      "mitigation": "goal/model/thread state records RR0-REPOSITORY-STATE-RECONCILIATION-001 as the next task after acceptance.",
+      "id": "R0_READY_EMPTY_UNTIL_REVIEW",
+      "severity": "R2"
+    },
+    {
+      "summary": "Original M7 renderer work remains in D:/WebProjects/MonsoonSovereigns and is not migrated by this task.",
+      "mitigation": "M7 renderer task records retained evidence paths and routes split/abandon/migrate decision to RR0-REPOSITORY-STATE-RECONCILIATION-001.",
+      "id": "PRESERVED_M7_PARTIAL_DIFF",
+      "severity": "R3"
+    },
+    {
+      "summary": "PROJECT_STATUS.md still contains long historical M0-M7 ledger content.",
+      "mitigation": "Top R0 snapshot clarifies current truth; compaction is deliberately deferred to RR0-STATUS-LEDGER-COMPACTION-001.",
+      "id": "STATUS_LEDGER_LENGTH",
+      "severity": "R2"
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "git rev-parse --show-toplevel; git status --short",
+      "result": "Confirmed worktree root D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption. Changed paths are limited to PROJECT_STATUS.md, docs/11-roadmap.md, docs/23-milestone-acceptance-matrix.md, goal/model/thread state, M7 retained-evidence task JSON, four RR0 task JSON files, and this handoff.",
+      "exit_code": 0
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-ROADMAP-ADOPTION-001",
+      "result": "VALID project/tasks/active/RR0-ROADMAP-ADOPTION-001.json.",
+      "exit_code": 0
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "result": "Listed tasks successfully. RR0-ROADMAP-ADOPTION-001 is REVIEW; four downstream RR0 tasks are DRAFT; M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 is PARTIAL.",
+      "exit_code": 0
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "result": "No output. Expected: downstream RR0 tasks depend on RR0-ROADMAP-ADOPTION-001 acceptance, and old M7 renderer is no longer READY.",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "result": "No whitespace errors.",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm exec prettier --check docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md docs/29-product-recovery-roadmap.md project/tasks/active/RR0-*.json",
+      "result": "All matched files use Prettier code style. Prettier --write was run first on the same allowed file set after the initial check reported formatting issues.",
+      "exit_code": 0
+    },
+    {
+      "command": "node -e parse all changed JSON files",
+      "result": "Parsed 9 changed JSON files: goal-mode-state, model-routing-state, M7 renderer task, thread registry, and five RR0 task files.",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --name-only check proving no forbidden paths changed",
+      "result": "No forbidden paths changed. Changed paths exclude apps/**, packages/**, tests/**, content-source/**, .github/**, tools/**, dependency manifests, release artifacts, and docs/GATE-M0.md through docs/GATE-M6.md.",
+      "exit_code": 0
+    },
+    {
+      "command": "git status --short -- PROJECT_STATUS.md docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md in D:/WebProjects/MonsoonSovereigns",
+      "result": "No output after correction. The accidental original-worktree edits to those three docs were restored; unrelated original M7 worktree changes were not touched.",
+      "exit_code": 0
+    }
+  ],
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "docs/11-roadmap.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "docs/29-product-recovery-roadmap.md",
+    "project/tasks/active/RR0-ROADMAP-ADOPTION-001.json",
+    "project/tasks/active/RR0-REPOSITORY-STATE-RECONCILIATION-001.json",
+    "project/tasks/active/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001.json",
+    "project/tasks/active/RR0-STATUS-LEDGER-COMPACTION-001.json",
+    "project/tasks/active/RR0-EXIT-VALIDATION-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/RR0-ROADMAP-ADOPTION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "created_at": "2026-07-10T07:40:00.000Z",
+  "task_id": "RR0-ROADMAP-ADOPTION-001",
+  "message_id": "MSG-20260710-SYSTEMS-REVIEW",
+  "from_role": "systems_architect",
+  "summary": "Adopted docs/29-product-recovery-roadmap.md as the accepted forward product-maturity roadmap, synchronized docs/11 and docs/23 to R0-R8 while preserving old M0-M8 material as historical ledger, added an R0 current snapshot to PROJECT_STATUS.md, moved M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 to non-active PARTIAL retained-evidence state, created the four-task R0 graph, and updated goal-mode/model-routing/thread registry with the unique active lead and stale not-found client thread evidence.",
+  "requested_action": "Review RR0 roadmap adoption, R0 task graph, retained M7 evidence status, thread/goal-mode routing, path scope, and validation evidence. Return ACCEPT or REQUEST_CHANGES.",
+  "status": "REVIEW",
+  "commit": null,
+  "branch_or_worktree": "codex/rr0-roadmap-adoption",
+  "route_to": "qa_reviewer"
+}

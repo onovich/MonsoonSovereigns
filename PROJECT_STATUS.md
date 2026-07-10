@@ -1,8 +1,22 @@
 # 项目状态与决定快照
 
-## 1. 当前阶段
+## 0. R0 当前快照（2026-07-10）
 
-项目处于 **M5 / Playable Vertical Slice**。
+当前前向阶段是 **R0 / Recovery Baseline**。
+
+- `docs/29-product-recovery-roadmap.md` 已由产品所有者在 2026-07-10 明确接受，成为前向产品成熟度 Roadmap。
+- `docs/11-roadmap.md` 与 `docs/23-milestone-acceptance-matrix.md` 已同步到 R0-R8；M0-M6 Gate 结果不重写，继续作为历史工程证据。
+- 当前任务是 `RR0-ROADMAP-ADOPTION-001`，状态为 `REVIEW`，路由给 `qa_reviewer`。
+- 最小 R0 task graph 只包含 `RR0-REPOSITORY-STATE-RECONCILIATION-001`、`RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001`、`RR0-STATUS-LEDGER-COMPACTION-001` 和 `RR0-EXIT-VALIDATION-001`；没有创建 R1 实现任务。
+- `M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001` 不再是 operational active work；其历史、部分工作和 handoff 证据保留，后续是否拆分/放弃/迁移由 R0 任务处理。
+- Autonomous Goal Mode 保持 enabled，`human_gate.required=false`。唯一 active lead thread 是 `019eff50-c69d-7612-a90b-7024a47e0af5`。
+- 旧 `client_engineer` thread `019f1f02-6d7b-72a0-86db-8945be6b0606` 已按真实 `close_agent` 返回 `not_found` 登记为 stale/not-found/closed；没有伪造关闭成功。
+
+## 1. 历史里程碑 Ledger（M0-M7，非前向 Roadmap）
+
+以下记录保留旧 M0-M7 执行历史和 Gate 证据。段落中的“当前”“下一项”等表述仅代表当时 ledger 快照，不代表 2026-07-10 后的前向阶段。
+
+历史记录起点曾标注项目处于 **M5 / Playable Vertical Slice**。
 
 M0 Gate 已通过，见 `docs/GATE-M0.md`：
 
@@ -391,3 +405,5 @@ Formal M7 content lock remains rejected. `M7-EXIT-VALIDATION-001` remains disabl
 `M7-STRATEGIC-TERRAIN-FIXTURE-001` is CLOSED after PR #239 entered `origin/main` at `851d36d9192b77be15e236da386e8c01f053c22f` with both PR Gate jobs passing. The task added low-fidelity COMPOSITE strategic terrain fixture content, compiler validation, boot-boundary coverage, and a per-corridor blocking-barrier regression after systems_architect requested and accepted the R2 fix.
 
 Formal M7 content lock remains rejected. The accepted fixture is still not a player-facing renderer replacement. The next dependency-ready task is `M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001`, focused on replacing the rejected polygon-first map drawing and spatial index with terrain-route-node-first rendering and interaction.
+
+As of 2026-07-10, `RR0-ROADMAP-ADOPTION-001` supersedes that operational next-action. `M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001` is retained as non-active evidence, not the current ready task.

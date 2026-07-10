@@ -4,24 +4,24 @@
     "active_leads": [
       {
         "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-        "task_id": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+        "task_id": "RR0-ROADMAP-ADOPTION-001",
         "task_ids": [
-          "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001"
+          "RR0-ROADMAP-ADOPTION-001"
         ],
-        "status": "active_ready_for_strategic_terrain_renderer_interaction_start",
+        "status": "active_r0_roadmap_adoption_review",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
-        "branch_or_worktree": "codex/close-m7-strategic-terrain-fixture",
-        "updated_at": "2026-07-01T23:21:47.0897812+08:00",
+        "branch_or_worktree": "codex/rr0-roadmap-adoption",
+        "updated_at": "2026-07-10T07:30:00.000Z",
         "last_integrated_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
-        "last_main_commit": "851d36d9192b77be15e236da386e8c01f053c22f",
-        "next_ready_tasks": [
-          "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001"
+        "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
+        "next_ready_tasks_after_acceptance": [
+          "RR0-REPOSITORY-STATE-RECONCILIATION-001"
         ],
-        "next_action": "Start M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 as the next READY M7 task."
+        "next_action": "Route RR0-ROADMAP-ADOPTION-001 REVIEW handoff to qa_reviewer."
       }
     ],
     "retired_leads": [
@@ -42,7 +42,7 @@
       "active_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "checked_at": "2026-07-01T23:21:47.0897812+08:00"
+      "checked_at": "2026-07-10T07:30:00.000Z"
     }
   },
   "entries": {
@@ -8476,7 +8476,7 @@
       "task_id": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "ready_to_start",
+      "status": "superseded_by_rr0_retained_non_active",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -8484,7 +8484,32 @@
       "branch_or_worktree": "codex/m7-strategic-terrain-renderer-interaction",
       "ready_after_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
       "ready_after_main_commit": "851d36d9192b77be15e236da386e8c01f053c22f",
-      "updated_at": "2026-07-01T23:21:47.0897812+08:00"
+      "updated_at": "2026-07-10T07:30:00.000Z"
+    },
+    "RR0-ROADMAP-ADOPTION-001:systems_architect": {
+      "task_id": "RR0-ROADMAP-ADOPTION-001",
+      "role": "systems_architect",
+      "thread_id": "019f4ac8-3361-74f0-a49b-f7baeaaceda0",
+      "status": "review_ready",
+      "updated_at": "2026-07-10T07:30:00.000Z"
+    },
+    "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001:client_engineer:stale:019f1f02-6d7b-72a0-86db-8945be6b0606": {
+      "task_id": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+      "role": "client_engineer",
+      "thread_id": "019f1f02-6d7b-72a0-86db-8945be6b0606",
+      "status": "stale_not_found_closed",
+      "close_agent_result": "not_found",
+      "fabricated_close_success": false,
+      "branch_or_worktree": "D:/WebProjects/MonsoonSovereigns",
+      "recorded_by_task": "RR0-ROADMAP-ADOPTION-001",
+      "updated_at": "2026-07-10T07:30:00.000Z"
+    },
+    "RR0-ROADMAP-ADOPTION-001:lead_orchestrator": {
+      "task_id": "RR0-ROADMAP-ADOPTION-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_r0_roadmap_adoption_review",
+      "updated_at": "2026-07-10T07:30:00.000Z"
     }
   },
   "replaced_threads": [
@@ -8684,7 +8709,7 @@
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
   ],
-  "updated_at": "2026-07-01T04:22:23.8080820+08:00",
+  "updated_at": "2026-07-10T07:30:00.000Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
@@ -8880,6 +8905,15 @@
       "configured_effort_after_amendment": "xhigh",
       "migration_status": "closed_after_accept_review_and_main_integration",
       "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019f1f02-6d7b-72a0-86db-8945be6b0606",
+      "role": "client_engineer",
+      "task_id": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+      "status": "stale_not_found_closed",
+      "close_agent_result": "not_found",
+      "fabricated_close_success": false,
+      "recorded_at": "2026-07-10T07:30:00.000Z"
     }
   ],
   "threads": {

@@ -1,0 +1,73 @@
+{
+  "id": "RR0-EXIT-VALIDATION-001",
+  "summary": "Validate R0 recovery baseline exit gate",
+  "milestone": "R0",
+  "status": "DRAFT",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "required_reviewers": ["qa_reviewer"],
+  "risk_level": "R4",
+  "dependencies": ["RR0-STATUS-LEDGER-COMPACTION-001"],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/RR0-EXIT-VALIDATION-001.json",
+      "project/tasks/active/RR0-*.json",
+      "project/tasks/thread-registry.json",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/messages/**",
+      "PROJECT_STATUS.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "tests/**",
+      "content-source/**",
+      ".github/**",
+      "tools/**",
+      "pnpm-lock.yaml",
+      "package.json",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Verify origin/main, RR0 branch, status files, task graph, thread registry, goal-mode state, and model-routing state are internally consistent.",
+    "Verify all production entrypoints, fixture/test paths, and no-op command surfaces from the R0 audit are recorded.",
+    "Verify no forbidden product code, dependency, content-source, CI, accepted ADR, or historical Gate file changed during R0.",
+    "Confirm Autonomous Goal Mode remains enabled and no active Human Gate exists after roadmap acceptance.",
+    "Recommend R0_GATE = PASS, REQUEST_CHANGES, or BLOCK with evidence."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-EXIT-VALIDATION-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e parse all changed JSON files",
+    "git diff --check",
+    "git diff --name-only check proving no forbidden paths changed"
+  ],
+  "branch_or_worktree": "codex/rr0-exit-validation-001",
+  "threads": {},
+  "route_to": "systems_architect",
+  "notes": [
+    "R0 exit validation must not start R1 work.",
+    "If any required check cannot run, status must be PARTIAL or BLOCKED rather than DONE.",
+    "Route REVIEW handoff to qa_reviewer."
+  ],
+  "created_at": "2026-07-10T07:30:00.000Z",
+  "updated_at": "2026-07-10T07:30:00.000Z",
+  "human_gate_required": false,
+  "roadmap_source": "docs/29-product-recovery-roadmap.md",
+  "no_r1_implementation_authorized": true
+}
