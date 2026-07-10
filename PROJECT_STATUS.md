@@ -6,7 +6,7 @@
 
 - `docs/29-product-recovery-roadmap.md` 已由产品所有者在 2026-07-10 明确接受，成为前向产品成熟度 Roadmap。
 - `docs/11-roadmap.md` 与 `docs/23-milestone-acceptance-matrix.md` 已同步到 R0-R8；M0-M6 Gate 结果不重写，继续作为历史工程证据。
-- `RR0-ROADMAP-ADOPTION-001` 已 CLOSED；`RR0-REPOSITORY-STATE-RECONCILIATION-001` 已独立 QA ACCEPT，并通过 PR #243 进入 `origin/main`（`ed190945a271252f9db32173c98d0bd1ffe86af7`）。当前任务是 `RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001`，状态为 `READY`。
+- `RR0-ROADMAP-ADOPTION-001` 与 `RR0-REPOSITORY-STATE-RECONCILIATION-001` 已 CLOSED；关闭记录通过 PR #244 进入 `origin/main`（`7878027f2211cc2421e1cee56a8b2dae2deb8f0b`）。`RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001` 已由独立 QA R2 ACCEPT，当前状态为 `ACCEPTED`，等待 PR/CI/main 集成后才可 CLOSED。
 - 最小 R0 task graph 只包含 `RR0-REPOSITORY-STATE-RECONCILIATION-001`、`RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001`、`RR0-STATUS-LEDGER-COMPACTION-001` 和 `RR0-EXIT-VALIDATION-001`；没有创建 R1 实现任务。
 - `M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001` 不再是 operational active work；其历史、部分工作和 handoff 证据保留，后续是否拆分/放弃/迁移由 R0 任务处理。
 - Autonomous Goal Mode 保持 enabled，`human_gate.required=false`。唯一 active lead thread 是 `019eff50-c69d-7612-a90b-7024a47e0af5`。

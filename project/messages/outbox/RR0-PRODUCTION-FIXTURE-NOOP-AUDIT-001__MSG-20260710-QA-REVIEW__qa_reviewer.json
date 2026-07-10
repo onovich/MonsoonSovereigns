@@ -1,0 +1,153 @@
+{
+  "message_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-REVIEW",
+  "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "The audit matrix itself is evidence-backed and covers the required Web, Electron, Worker, sim-core, read-model, preview/submit, time-control, save/load, M3-M7, canary, Node runner, Storybook, and Playwright distinctions. However, the writer handoff and task metadata contain impossible future REVIEW timestamps relative to the verified route time and writer commit time. Because this R0 task is specifically about restoring trustworthy product/process facts, those metadata defects must be corrected before acceptance.",
+  "artifacts": [
+    "project/audits/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001.md",
+    "project/tasks/active/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001.json",
+    "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-WRITER-REVIEW__systems_architect.json",
+    "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption @ codex/rr0-production-fixture-noop-audit-001",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-WRITER-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Writer handoff is schema-valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+      "exit_code": 0,
+      "result": "Task JSON is schema-valid in REVIEW state."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list emitted; RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001 is REVIEW and no R1 task appears in the active list."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready list emitted no tasks."
+    },
+    {
+      "command": "node -e parse writer changed JSON files from git show 3391fdbc",
+      "exit_code": 0,
+      "result": "Parsed writer task JSON and writer handoff JSON from commit 3391fdbc."
+    },
+    {
+      "command": "git diff --check 9c0e84ba..3391fdbc",
+      "exit_code": 0,
+      "result": "No whitespace errors in writer diff."
+    },
+    {
+      "command": "git diff --name-only / forbidden-path proof for 9c0e84ba..3391fdbc",
+      "exit_code": 0,
+      "result": "Writer changed only project/audits/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001.md, the writer handoff, and this task JSON; no forbidden paths changed."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Target worktree clean on codex/rr0-production-fixture-noop-audit-001, ahead of origin/main by 5 before this QA artifact."
+    },
+    {
+      "command": "git merge-base --is-ancestor 9c0e84ba 3391fdbc; git merge-base --is-ancestor 3391fdbc HEAD",
+      "exit_code": 0,
+      "result": "Writer base is ancestor of writer commit, and writer commit is ancestor of current HEAD fd90bef735875d6606e4f54c0ddda7dc07546930."
+    },
+    {
+      "command": "git -C D:/WebProjects/MonsoonSovereigns status --short --untracked-files=all",
+      "exit_code": 0,
+      "result": "Retained M7 worktree still has 20 status entries."
+    },
+    {
+      "command": "Get-ChildItem project/tasks/active -Filter *.json | Where-Object { $_.BaseName -match '^(R1|RR1)-' }",
+      "exit_code": 0,
+      "result": "No R1/RR1 active task files found."
+    },
+    {
+      "command": "rg -n 'new Worker|postMessage|onmessage|MessagePort|MessageChannel|SimulationMessageV1|simulation\\.(boot|preview-command|submit-command|query|request-save|load-save)' apps/web/src apps/web/index.html apps/web/host-hash-canary.html apps/desktop/src apps/desktop/renderer packages/ui/src packages/client-core/src",
+      "exit_code": 0,
+      "result": "Matches are limited to apps/web/src/host-hash-canary; normal Web/Electron/client paths do not expose a Simulation Worker message port."
+    },
+    {
+      "command": "rg -n 'bootSimulationV1|previewCommandV1|submitCommandV1|querySimulationV1|requestSaveV1|loadSaveV1' apps/web/src apps/desktop/src apps/desktop/renderer packages/ui/src packages/client-core/src",
+      "exit_code": 1,
+      "result": "No production Web/Electron/UI/client-core caller for bottom sim-core runtime APIs found."
+    },
+    {
+      "command": "rg -n \"setSpeed|SimulationSpeed|auto-pause|auto pause|\\b1x\\b|\\b2x\\b|\\b4x\\b\" apps/web/src packages/ui/src packages/client-core/src packages/protocol/src packages/sim-core/src apps/desktop/src apps/desktop/renderer",
+      "exit_code": 1,
+      "result": "No production time-control symbols found."
+    },
+    {
+      "command": "rg -n 'void command|setM[3456].*Status|onM[3456]CommandSubmit|ClientM[34567]SubmittedCommand|handleM7ScenarioChange|handleM7SurfaceSelect|createM5SessionSave|parseM5SessionSave|createM6SessionSave|parseM6SessionSave' apps/web/src/shell/web-client-shell.tsx packages/ui/src/index.tsx packages/client-core/src/index.ts",
+      "exit_code": 0,
+      "result": "Confirmed M3-M6 void-command/local-status handlers, local M5/M6 session saves, and M7 local scenario/surface handlers."
+    },
+    {
+      "command": "rg -n 'host-hash-canary|MONSOON_SMOKE_WEB|MONSOON_HOST_HASH_CANARY|worker_threads|runM5PlayableLoopV1|runM6AlphaStartToVictoryLoopV1|WebClientShell\\.stories|fixture=|M5 save status|data-confirmed-count' apps/web apps/desktop apps/sim-runner .storybook tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "Confirmed canary, Electron smoke, Node runner, Storybook, and Playwright evidence is test/demo/fixture oriented, not a production playable path."
+    },
+    {
+      "command": "rg -n 'react|pixi|electron|node:|\\bfs\\b|document|window|Date\\.now|Math\\.random|new Date|performance\\.now|@monsoon/(ui|map-renderer|platform|client-core)' packages/sim-core/src packages/sim-core/package.json",
+      "exit_code": 0,
+      "result": "Only local identifier false positives such as windowError/topology node were returned; no forbidden sim-core imports observed."
+    },
+    {
+      "command": "rg -n '^import .*(@monsoon/(ui|map-renderer|platform|client-core)|react|pixi|electron|node:|fs|document|window)' packages/sim-core/src packages/sim-core/package.json",
+      "exit_code": 1,
+      "result": "No forbidden sim-core import lines found."
+    },
+    {
+      "command": "[DateTime]::UtcNow.ToString(\"yyyy-MM-ddTHH:mm:ss.fffZ\")",
+      "exit_code": 0,
+      "result": "UTC check returned 2026-07-10T11:11:32.972Z during QA review."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "AUDIT_CONTENT",
+      "decision": "No substantive audit-matrix correctness defect was found. The static evidence supports the high-risk conclusions and separates facts from inferences adequately for R0."
+    },
+    {
+      "id": "COMMIT_NULL",
+      "decision": "The writer handoff commit field at project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-WRITER-REVIEW__systems_architect.json:13 is schema-valid null and is not independently blocking because the routed handoff and git history identify writer commit 3391fdbc."
+    },
+    {
+      "id": "FUTURE_TIMESTAMP_BLOCKER",
+      "decision": "The future timestamps are blocking for this R0 auditability task: writer commit time is 2026-07-10T11:00:18Z, lead routed from a verified UTC of 2026-07-10T11:02:56Z, but the writer handoff and task review metadata claim 2026-07-10T11:45:00Z."
+    }
+  ],
+  "risks": [
+    "The audit remains static evidence and should not be treated as the future R1 runtime test suite.",
+    "The current target branch includes a lead process commit after writer commit; this review scoped content findings to writer diff 9c0e84ba..3391fdbc and recorded ancestry."
+  ],
+  "blockers": [
+    {
+      "severity": "P1",
+      "file": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-WRITER-REVIEW__systems_architect.json",
+      "line": 89,
+      "symbol": "created_at",
+      "repro": "Compare git show --format='%H %cI' --no-patch 3391fdbc and the routed LEAD_PREFLIGHT verified UTC 2026-07-10T11:02:56Z against this field.",
+      "impact": "The handoff claims it was created at 2026-07-10T11:45:00Z, after both the writer commit and the already routed review time. That makes the REVIEW handoff chronology false in a task whose acceptance depends on trustworthy audit/process facts.",
+      "required_fix": "Replace the future created_at with the actual non-future UTC handoff creation time or emit a corrected REVIEW handoff that records the real chronology."
+    },
+    {
+      "severity": "P1",
+      "file": "project/tasks/active/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001.json",
+      "line": 134,
+      "symbol": "review_ready_at",
+      "repro": "Compare writer commit 3391fdbc at 2026-07-10T11:00:18Z and routed LEAD_PREFLIGHT verified UTC 2026-07-10T11:02:56Z against review_ready_at.",
+      "impact": "The task metadata claims REVIEW readiness at 2026-07-10T11:45:00Z, which was still in the future when the handoff was routed. This undermines the process ledger even though the audit content is otherwise sound.",
+      "required_fix": "Replace review_ready_at with the real non-future UTC readiness time, then rerun task validation, handoff validation, JSON parse, diff check, and forbidden-path proof."
+    }
+  ],
+  "route_to": "systems_architect",
+  "requested_action": "Correct the impossible future timestamp metadata without changing product code or creating R1 work, rerun the recorded process gates, and return a corrected REVIEW handoff for independent QA.",
+  "created_at": "2026-07-10T11:11:32.972Z"
+}
