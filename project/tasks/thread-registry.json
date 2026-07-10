@@ -8,18 +8,18 @@
         "task_ids": [
           "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001"
         ],
-        "status": "active_r0_production_fixture_audit_qa_r2",
+        "status": "active_r0_production_fixture_audit_accepted_pending_integration",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
-        "updated_at": "2026-07-10T11:21:28.469Z",
+        "updated_at": "2026-07-10T11:26:53.533Z",
         "last_integrated_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
         "last_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
         "next_ready_tasks_after_acceptance": [],
-        "next_action": "Track the same qa_reviewer re-reviewing fix commit c2c02885; retain the systems_architect thread until final verdict."
+        "next_action": "Open the accepted audit PR, wait for required CI, merge to main, then close the task and enable status ledger compaction."
       }
     ],
     "retired_leads": [
@@ -8546,10 +8546,13 @@
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "review_qa_r2_active_writer_waiting",
+      "status": "accepted_pending_pr_integration",
       "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
       "base_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
-      "updated_at": "2026-07-10T11:21:28.469Z"
+      "qa_r2_review_commit": "255f5b19e5011f89607f471a9f332bb2e16b469f",
+      "qa_r2_review_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
+      "accepted_at": "2026-07-10T11:26:53.533Z",
+      "updated_at": "2026-07-10T11:26:53.533Z"
     },
     "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001:systems_architect:attempt-1": {
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
@@ -8565,7 +8568,7 @@
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
       "role": "systems_architect",
       "thread_id": "019f4b98-80d7-7623-a6f3-86205e788366",
-      "status": "review_waiting_after_fix",
+      "status": "closed_after_qa_r2_accept",
       "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
       "started_at": "2026-07-10T10:35:34.390Z",
       "writer_commit": "3391fdbcfe50448f0b41cc98b3b786969af9671d",
@@ -8573,7 +8576,8 @@
       "qa_request_changes_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
       "qa_request_changes_commit": "a669dc62a195828540bf7e50e305561ccbb4f060",
       "fix_commit": "c2c028858e94a18bfcb2106e17f7d4439320e5c2",
-      "updated_at": "2026-07-10T11:21:28.469Z"
+      "closed_at": "2026-07-10T11:26:53.533Z",
+      "updated_at": "2026-07-10T11:26:53.533Z"
     },
     "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001:research_scout": {
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
@@ -8591,14 +8595,17 @@
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
       "role": "qa_reviewer",
       "thread_id": "019f4bb1-6e0f-75f0-967e-05f3da603f5f",
-      "status": "active_read_only_re_review",
+      "status": "closed_after_qa_r2_accept",
       "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
       "review_target_commit": "3391fdbcfe50448f0b41cc98b3b786969af9671d",
       "started_at": "2026-07-10T11:02:43.279Z",
       "review_commit": "a669dc62a195828540bf7e50e305561ccbb4f060",
       "review_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
       "fix_target_commit": "c2c028858e94a18bfcb2106e17f7d4439320e5c2",
-      "updated_at": "2026-07-10T11:21:28.469Z"
+      "qa_r2_review_commit": "255f5b19e5011f89607f471a9f332bb2e16b469f",
+      "qa_r2_review_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
+      "closed_at": "2026-07-10T11:26:53.533Z",
+      "updated_at": "2026-07-10T11:26:53.533Z"
     }
   },
   "replaced_threads": [

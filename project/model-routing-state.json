@@ -21,18 +21,18 @@
     "task_ids": [
       "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001"
     ],
-    "status": "active_r0_production_fixture_audit_qa_r2",
+    "status": "active_r0_production_fixture_audit_accepted_pending_integration",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
-    "updated_at": "2026-07-10T11:21:28.469Z",
+    "updated_at": "2026-07-10T11:26:53.533Z",
     "last_integrated_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
     "last_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
     "next_ready_tasks_after_acceptance": [],
-    "next_action": "Track the same qa_reviewer re-reviewing fix commit c2c02885; retain the systems_architect thread until final verdict."
+    "next_action": "Open the accepted audit PR, wait for required CI, merge to main, then close the task and enable status ledger compaction."
   },
   "retired_lead_threads": [
     {
@@ -1968,47 +1968,18 @@
       "task_ids": [
         "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001"
       ],
-      "status": "active_r0_production_fixture_audit_qa_r2",
+      "status": "active_r0_production_fixture_audit_accepted_pending_integration",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
-      "updated_at": "2026-07-10T11:21:28.469Z",
+      "updated_at": "2026-07-10T11:26:53.533Z",
       "last_integrated_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
       "last_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
       "next_ready_tasks_after_acceptance": [],
-      "next_action": "Track the same qa_reviewer re-reviewing fix commit c2c02885; retain the systems_architect thread until final verdict."
-    },
-    {
-      "thread_id": "019f4b98-80d7-7623-a6f3-86205e788366",
-      "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
-      "status": "review_waiting_after_fix",
-      "role": "systems_architect",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
-      "writer_commit": "3391fdbcfe50448f0b41cc98b3b786969af9671d",
-      "writer_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-WRITER-REVIEW__systems_architect.json",
-      "qa_request_changes_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
-      "qa_request_changes_commit": "a669dc62a195828540bf7e50e305561ccbb4f060",
-      "fix_commit": "c2c028858e94a18bfcb2106e17f7d4439320e5c2",
-      "updated_at": "2026-07-10T11:21:28.469Z"
-    },
-    {
-      "thread_id": "019f4bb1-6e0f-75f0-967e-05f3da603f5f",
-      "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
-      "status": "active_read_only_re_review",
-      "role": "qa_reviewer",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
-      "review_target_commit": "3391fdbcfe50448f0b41cc98b3b786969af9671d",
-      "review_commit": "a669dc62a195828540bf7e50e305561ccbb4f060",
-      "review_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
-      "fix_target_commit": "c2c028858e94a18bfcb2106e17f7d4439320e5c2",
-      "updated_at": "2026-07-10T11:21:28.469Z"
+      "next_action": "Open the accepted audit PR, wait for required CI, merge to main, then close the task and enable status ledger compaction."
     }
   ],
   "task_effects": {
@@ -2452,7 +2423,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-10T11:21:28.469Z",
+  "last_updated_at": "2026-07-10T11:26:53.533Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -5075,8 +5046,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Wait for the same qa_reviewer to re-review fix commit c2c02885; route ACCEPT to lead integration or any further changes to the same writer.",
-  "current_task_status": "REVIEW",
+  "next_machine_action": "Open the accepted audit PR, wait for required CI, merge to main, then close the task and enable RR0-STATUS-LEDGER-COMPACTION-001.",
+  "current_task_status": "ACCEPTED",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",

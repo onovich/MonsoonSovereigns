@@ -2,7 +2,7 @@
   "id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
   "summary": "Audit production entrypoints, fixture paths, and no-op command surfaces",
   "milestone": "R0",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "required_reviewers": [
@@ -73,14 +73,14 @@
     "Route REVIEW handoff to qa_reviewer."
   ],
   "created_at": "2026-07-10T07:30:00.000Z",
-  "updated_at": "2026-07-10T11:02:43.279Z",
+  "updated_at": "2026-07-10T11:26:53.533Z",
   "human_gate_required": false,
   "roadmap_source": "docs/29-product-recovery-roadmap.md",
   "no_r1_implementation_authorized": true,
   "ready_after_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
   "ready_after_pr": 243,
   "ready_after_main_commit": "ed190945a271252f9db32173c98d0bd1ffe86af7",
-  "next_action": "Track one systems_architect writer producing the scoped audit artifact and REVIEW handoff, then route it to independent QA.",
+  "next_action": "Open the accepted audit PR, wait for required CI, merge to main, then close the task before enabling status ledger compaction.",
   "started_at": "2026-07-10T08:55:08.388Z",
   "base_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
   "start_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-START__lead_orchestrator.json",
@@ -131,5 +131,14 @@
     }
   ],
   "writer_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-WRITER-REVIEW__systems_architect.json",
-  "review_ready_at": "2026-07-10T11:00:18.000Z"
+  "review_ready_at": "2026-07-10T11:00:18.000Z",
+  "qa_review_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
+  "qa_review_result": "REQUEST_CHANGES",
+  "qa_review_commit": "a669dc62a195828540bf7e50e305561ccbb4f060",
+  "writer_fix_commit": "c2c028858e94a18bfcb2106e17f7d4439320e5c2",
+  "qa_r2_review_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
+  "qa_r2_review_result": "ACCEPT",
+  "qa_r2_review_commit": "255f5b19e5011f89607f471a9f332bb2e16b469f",
+  "lead_accept_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-07-10T11:26:53.533Z"
 }
