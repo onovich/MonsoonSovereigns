@@ -9,9 +9,9 @@
 ## 当前阶段
 
 - 当前前向阶段：**R0 / Recovery Baseline**。
-- 当前任务：`RR0-EXIT-VALIDATION-001`，状态 `READY`，等待 closure 记录进入 main 后启动。
-- 当前分支：`codex/close-rr0-status-ledger-compaction-001`。
-- 任务基线：`origin/main@92f5800143a7987128898526d20ee2df13f48c67`。
+- 当前任务：`RR0-EXIT-VALIDATION-001`，状态 `IN_PROGRESS`。
+- 当前分支：`codex/rr0-exit-validation-001`。
+- 任务基线：`origin/main@e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0`。
 - Autonomous Goal Mode：enabled；`human_gate.required=false`。
 - 唯一 active lead：`019eff50-c69d-7612-a90b-7024a47e0af5`。
 - 未创建、未启动任何 R1 实现任务。
@@ -57,6 +57,6 @@ R0 剩余任务仅有 `RR0-EXIT-VALIDATION-001`。只有 R0 Gate 通过后才允
 
 ## 下一动作
 
-1. 合并 `RR0-STATUS-LEDGER-COMPACTION-001` 的最小 closure 记录。
-2. 基于同步后的 main 启动 `RR0-EXIT-VALIDATION-001`，由 `systems_architect` 执行并路由给独立 `qa_reviewer`。
-3. R0 Gate 通过前保持 R1 冻结。
+1. 由 `systems_architect` 执行 `RR0-EXIT-VALIDATION-001`，输出明确 `PASS`、`REQUEST_CHANGES` 或 `BLOCK` 证据。
+2. 将其 REVIEW handoff 路由给独立 `qa_reviewer`。
+3. 只有 Gate 与 CI 都通过后才关闭 R0；此前保持 R1 冻结。
