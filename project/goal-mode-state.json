@@ -1,38 +1,36 @@
 {
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
-  "current_milestone": "M7",
+  "current_milestone": "R0",
   "current_tasks": [
-    "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001"
+    "RR0-ROADMAP-ADOPTION-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+      "task_id": "RR0-ROADMAP-ADOPTION-001",
       "task_ids": [
-        "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001"
+        "RR0-ROADMAP-ADOPTION-001"
       ],
-      "status": "active_ready_for_strategic_terrain_renderer_interaction_start",
+      "status": "active_r0_roadmap_adoption_accepted_pending_integration",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-m7-strategic-terrain-fixture",
-      "updated_at": "2026-07-01T23:21:47.0897812+08:00",
+      "branch_or_worktree": "codex/rr0-roadmap-adoption",
+      "updated_at": "2026-07-10T08:03:07.031Z",
       "last_integrated_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
-      "last_main_commit": "851d36d9192b77be15e236da386e8c01f053c22f",
-      "next_ready_tasks": [
-        "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001"
+      "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
+      "next_ready_tasks_after_acceptance": [
+        "RR0-REPOSITORY-STATE-RECONCILIATION-001"
       ],
-      "next_action": "Start M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 as the next READY M7 task."
+      "next_action": "Open RR0 roadmap adoption PR, wait for required CI, merge to main, then close the task before starting downstream R0 work."
     }
   },
   "last_integrated_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
-  "last_main_commit": "851d36d9192b77be15e236da386e8c01f053c22f",
-  "next_ready_tasks": [
-    "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001"
-  ],
+  "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -91,20 +89,13 @@
   "human_gate": {
     "required": false,
     "active_gate_task_id": null,
-    "approval_scope": "FORMAL_M7_CONTENT_LOCK_REJECTED_STRATEGIC_TERRAIN_RENDERER_INTERACTION_READY",
-    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-STRATEGIC-TERRAIN-REQUEST-CHANGES__product_owner.json",
-    "decision_result": "REQUEST_CHANGES",
-    "decision_options": [
-      "APPROVE_CONTENT_LOCK_WITH_LIMITS",
-      "DEFER_CONTENT_LOCK",
-      "REQUEST_CHANGES"
-    ],
-    "note": "Fixture is closed; content lock remains rejected until renderer-interaction, validation, and product-owner reconsideration complete.",
-    "recorded_at": "2026-07-01T18:10:33.6637785+08:00",
-    "last_main_commit": "851d36d9192b77be15e236da386e8c01f053c22f",
-    "topology_validation_main_commit": "3617115d446a4f234e915abfecf14a367624dc99",
-    "closure_main_commit": "0510016f50dc9b49701333f61fbdde212fa61d34",
-    "next_ready_task": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001"
+    "approval_scope": "ROADMAP_ACCEPTED_R0_ADOPTION_ACCEPTED_PENDING_INTEGRATION",
+    "approval_source": "Product owner message on 2026-07-10: 可以，接受。",
+    "decision_result": "ACCEPT_ROADMAP",
+    "note": "Independent QA accepted the R0 adoption at 45b9a439; no downstream R0 task starts until PR/CI/main integration and task closure.",
+    "recorded_at": "2026-07-10T07:30:00.000Z",
+    "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
+    "accepted_roadmap_commit": "d7da7f61a71695211a664c6a13a5cfc533174b27"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -116,7 +107,9 @@
     "transition": "LEAD-TRANSITION-ACCEPT-001",
     "outgoing_thread_id": null,
     "outgoing_status": "retired_closed",
-    "unique_active_lead_check": "PASS"
+    "unique_active_lead_check": "PASS",
+    "current_task_id": "RR0-ROADMAP-ADOPTION-001",
+    "updated_at": "2026-07-10T07:30:00.000Z"
   },
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
@@ -576,7 +569,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Start M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 as the next READY M7 task.",
+  "next_action": "创建并合并 RR0 Roadmap adoption PR；进入 main 并 CLOSED 后才启动下游 R0 任务。",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -939,7 +932,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-07-01T23:21:47.0897812+08:00",
+  "last_updated_at": "2026-07-10T08:03:07.031Z",
   "updated_at": "2026-07-01T23:21:47.0897812+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1153,7 +1146,7 @@
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
   },
-  "current_task": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+  "current_task": "RR0-ROADMAP-ADOPTION-001",
   "m6_accessibility_core_flows": {
     "status": "CLOSED",
     "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
@@ -2007,8 +2000,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "READY",
-  "next_machine_action": "Start M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 as the next READY M7 task.",
+  "current_task_status": "ACCEPTED",
+  "next_machine_action": "Open RR0 roadmap adoption PR, wait for CI, merge to main, then close RR0-ROADMAP-ADOPTION-001 before starting downstream R0 work.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -3817,7 +3810,7 @@
   },
   "m7_strategic_terrain_renderer_interaction": {
     "task_id": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
-    "status": "READY",
+    "status": "PARTIAL_RETAINED_NON_ACTIVE_EVIDENCE",
     "owner_role": "client_engineer",
     "reviewer_role": "systems_architect",
     "required_reviewers": [
@@ -3830,7 +3823,37 @@
     "ready_after_main_commit": "851d36d9192b77be15e236da386e8c01f053c22f",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "updated_at": "2026-07-01T23:21:47.0897812+08:00",
-    "next_action": "Start renderer/interaction replacement work using accepted terrain-route-node schema and fixture."
-  }
+    "updated_at": "2026-07-10T07:30:00.000Z",
+    "next_action": "Retain partial renderer evidence as historical/non-active M7 record; no autonomous continuation from this task during R0 roadmap adoption review.",
+    "operational_active": false,
+    "superseded_by_task": "RR0-ROADMAP-ADOPTION-001",
+    "stale_client_thread_id": "019f1f02-6d7b-72a0-86db-8945be6b0606",
+    "stale_client_thread_status": "stale_not_found_closed"
+  },
+  "r0_roadmap_adoption": {
+    "status": "REVIEW",
+    "task_id": "RR0-ROADMAP-ADOPTION-001",
+    "accepted_roadmap": "docs/29-product-recovery-roadmap.md",
+    "accepted_roadmap_commit": "d7da7f61a71695211a664c6a13a5cfc533174b27",
+    "base_origin_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
+    "downstream_tasks_after_acceptance": [
+      "RR0-REPOSITORY-STATE-RECONCILIATION-001",
+      "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+      "RR0-STATUS-LEDGER-COMPACTION-001",
+      "RR0-EXIT-VALIDATION-001"
+    ],
+    "r1_tasks_created": false,
+    "updated_at": "2026-07-10T07:30:00.000Z"
+  },
+  "stale_threads": [
+    {
+      "thread_id": "019f1f02-6d7b-72a0-86db-8945be6b0606",
+      "role": "client_engineer",
+      "task_id": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+      "status": "stale_not_found_closed",
+      "close_agent_result": "not_found",
+      "fabricated_close_success": false,
+      "recorded_at": "2026-07-10T07:30:00.000Z"
+    }
+  ]
 }

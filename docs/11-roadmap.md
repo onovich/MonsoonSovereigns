@@ -2,6 +2,41 @@
 
 > Roadmap 以退出条件而非日历承诺管理。不得因赶阶段而绕过确定性、测试、历史研究或可解释性。
 
+## 当前权威
+
+`docs/29-product-recovery-roadmap.md` 已在 2026-07-10 由产品所有者明确接受，现为前向产品成熟度 Roadmap。
+
+本文件保留旧 M0-M8 路线作为历史工程 ledger，但自 R0 起，项目成熟度只按 R0-R8 Gate 判断。M0-M6 Gate 结论不被重写；它们继续作为历史工程证据保留在 `docs/GATE-M0.md` 至 `docs/GATE-M6.md` 与 `PROJECT_STATUS.md` 的历史 ledger 中。
+
+## R0-R8 前向阶段
+
+| 阶段 | 名称                         | 核心问题                                 | 退出结论               |
+| ---- | ---------------------------- | ---------------------------------------- | ---------------------- |
+| R0   | Recovery Baseline            | 仓库、状态、分支和产品事实是否可信       | `R0_GATE = PASS`       |
+| R1   | Authoritative Client Runtime | Web 客户端是否真正接入权威模拟           | `R1_GATE = PASS`       |
+| R2   | First Playable Court Loop    | 玩家是否能理解并完成一个月度治理循环     | `R2_GATE = PASS`       |
+| R3   | Strategic World Map          | 地图是否成为理解局势和发起行动的主要界面 | `R3_GATE = PASS`       |
+| R4   | Integrated Campaign Loop     | 治理、动员、行军、围城和战后是否真正连通 | `R4_GATE = PASS`       |
+| R5   | Product Alpha                | 玩家能否从开局玩到一种终局               | `R5_GATE = PASS`       |
+| R6   | Content Alpha                | 内容管线能否支持目标场景和历史质量       | `R6_GATE = PASS`       |
+| R7   | Beta Content Lock            | 系统、体验、内容和平台是否允许锁定       | `R7_GATE = HUMAN_PASS` |
+| R8   | Release Candidate / 1.0      | 构建是否达到真实发布标准                 | `R8_GATE = HUMAN_PASS` |
+
+## 执行边界
+
+- R0 只做恢复基线、状态对齐、生产入口/fixture/no-op 清点和 R0 Gate 验证；不制作新地图、美术、内容或 R1 实现。
+- R1 前不得继续新的玩家功能、内容填充、美术生产或内容锁。
+- R3 通过前不得把当前地图方向包装为正式战略地图内容。
+- R7 前不得正式内容锁；R8 前不得商店提交、正式签名发布或商业承诺。
+- 手动节点会战继续保持 `DEFER_MANUAL_NODE_BATTLE`，不阻塞 R0-R8。
+- 服务器、多人、遥测、任意代码 Mod、Rust/WASM、复杂海战和 3D 战斗继续不在 1.0 自动范围内。
+
+详细交付、Gate 证据规则、失败规则和近期任务序列见 `docs/29-product-recovery-roadmap.md`。
+
+## 历史 M0-M8 Roadmap（非前向权威）
+
+以下内容保留 2026-07-10 前的工程阶段记录。它不再决定前向产品成熟度，也不得覆盖已接受的 R0-R8 Roadmap。
+
 ## M0 — 仓库与执行基线
 
 ### 目标

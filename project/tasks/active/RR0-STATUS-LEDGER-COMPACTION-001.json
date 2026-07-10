@@ -1,0 +1,73 @@
+{
+  "id": "RR0-STATUS-LEDGER-COMPACTION-001",
+  "summary": "Compact current status while preserving M0-M7 historical ledger evidence",
+  "milestone": "R0",
+  "status": "DRAFT",
+  "owner_role": "lead_orchestrator",
+  "reviewer_role": "qa_reviewer",
+  "required_reviewers": ["qa_reviewer"],
+  "risk_level": "R4",
+  "dependencies": ["RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001"],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/RR0-STATUS-LEDGER-COMPACTION-001.json",
+      "project/tasks/active/RR0-*.json",
+      "project/tasks/thread-registry.json",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/messages/**",
+      "PROJECT_STATUS.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "tests/**",
+      "content-source/**",
+      ".github/**",
+      "tools/**",
+      "pnpm-lock.yaml",
+      "package.json",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Keep a concise R0 current snapshot at the top of PROJECT_STATUS.md.",
+    "Move or clearly mark old M0-M7 material as historical ledger without rewriting M0-M6 Gate results.",
+    "Ensure docs/29 remains the accepted forward Roadmap and docs/11/docs/23 remain synchronized to R0-R8.",
+    "Preserve evidence paths, PR numbers, commits, and rejected-direction context needed for audit.",
+    "Do not delete historical M7 renderer evidence or product-owner rejection records."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-STATUS-LEDGER-COMPACTION-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e parse all changed JSON files",
+    "git diff --check",
+    "git diff --name-only check proving no forbidden paths changed"
+  ],
+  "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "This task may compact process/status documentation only.",
+    "No product code, Gate document rewrite, ADR rewrite, or historical fact reinterpretation is authorized.",
+    "Route REVIEW handoff to qa_reviewer."
+  ],
+  "created_at": "2026-07-10T07:30:00.000Z",
+  "updated_at": "2026-07-10T07:30:00.000Z",
+  "human_gate_required": false,
+  "roadmap_source": "docs/29-product-recovery-roadmap.md",
+  "no_r1_implementation_authorized": true
+}

@@ -1,0 +1,133 @@
+{
+  "id": "RR0-ROADMAP-ADOPTION-001",
+  "summary": "Adopt the accepted product recovery roadmap and create the minimal R0 task graph",
+  "milestone": "R0",
+  "status": "ACCEPTED",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "required_reviewers": ["qa_reviewer"],
+  "risk_level": "R4",
+  "dependencies": [],
+  "scope": {
+    "allowed_paths": [
+      "PROJECT_STATUS.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/29-product-recovery-roadmap.md",
+      "project/tasks/active/RR0-*.json",
+      "project/tasks/active/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001.json",
+      "project/tasks/thread-registry.json",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "tests/**",
+      "content-source/**",
+      ".github/**",
+      "tools/**",
+      "pnpm-lock.yaml",
+      "package.json",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Record the product owner's explicit acceptance of docs/29-product-recovery-roadmap.md without rewriting historical M0-M6 Gate results.",
+    "Make docs/29 the authoritative forward product-maturity roadmap and reconcile docs/11 and docs/23 to the R0-R8 stage model.",
+    "Move the rejected M7 strategic terrain renderer task out of operational IN_PROGRESS state while preserving its partial diff and handoff evidence.",
+    "Create only the minimum dependency-ordered R0 tasks required by the accepted roadmap; do not create R1 implementation tasks yet.",
+    "Record the real current lead thread and mark the stale client_engineer record closed/not-found without deleting history.",
+    "Set current milestone to R0, keep Autonomous Goal Mode enabled, and record no active Human Gate after roadmap acceptance.",
+    "Do not modify product code, tests, content, dependencies, prior Gate documents, or accepted ADRs."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-ROADMAP-ADOPTION-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "git diff --check",
+    "pnpm exec prettier --check docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md docs/29-product-recovery-roadmap.md project/tasks/active/RR0-*.json",
+    "node -e parse all changed JSON files",
+    "node -e semantic assertion for goal/model current R0 task, active lead, downstream DRAFT tasks, and non-active M7 renderer drift",
+    "git diff --name-only check proving no forbidden paths changed"
+  ],
+  "branch_or_worktree": "codex/rr0-roadmap-adoption",
+  "threads": {
+    "systems_architect": "019f4ac8-3361-74f0-a49b-f7baeaaceda0",
+    "qa_reviewer": "019f4b05-d9f7-7273-84ef-8eb2490d1925"
+  },
+  "route_to": "qa_reviewer",
+  "notes": [
+    "This is a process and roadmap adoption task, not a product implementation task.",
+    "The current dirty M7 renderer work remains preserved in the original workspace and must not be copied into this worktree.",
+    "R0 task creation must keep writer scopes disjoint and reserve an independent reviewer slot.",
+    "R0 task graph created with exactly four downstream RR0 tasks and no R1 implementation tasks.",
+    "M7 strategic terrain renderer interaction is retained as non-active evidence rather than operational work.",
+    "Old client_engineer thread 019f1f02-6d7b-72a0-86db-8945be6b0606 is recorded as stale/not-found/closed based on real close_agent not_found result."
+  ],
+  "created_at": "2026-07-10T14:48:00+08:00",
+  "updated_at": "2026-07-10T08:03:07.031Z",
+  "human_gate_required": false,
+  "approval_source": "Product owner message on 2026-07-10: 可以，接受。",
+  "next_action": "Open PR, wait for required CI, merge to main, then close RR0-ROADMAP-ADOPTION-001 before starting downstream R0 work.",
+  "downstream_tasks": [
+    {
+      "id": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
+      "status": "DRAFT",
+      "dependencies": ["RR0-ROADMAP-ADOPTION-001"],
+      "owner_role": "lead_orchestrator",
+      "reviewer_role": "qa_reviewer"
+    },
+    {
+      "id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+      "status": "DRAFT",
+      "dependencies": ["RR0-REPOSITORY-STATE-RECONCILIATION-001"],
+      "owner_role": "systems_architect",
+      "reviewer_role": "qa_reviewer"
+    },
+    {
+      "id": "RR0-STATUS-LEDGER-COMPACTION-001",
+      "status": "DRAFT",
+      "dependencies": ["RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001"],
+      "owner_role": "lead_orchestrator",
+      "reviewer_role": "qa_reviewer"
+    },
+    {
+      "id": "RR0-EXIT-VALIDATION-001",
+      "status": "DRAFT",
+      "dependencies": ["RR0-STATUS-LEDGER-COMPACTION-001"],
+      "owner_role": "systems_architect",
+      "reviewer_role": "qa_reviewer"
+    }
+  ],
+  "acceptance_evidence": {
+    "roadmap_status": "docs/29-product-recovery-roadmap.md is accepted as forward product maturity roadmap",
+    "historical_gates_rewritten": false,
+    "docs_synced": ["docs/11-roadmap.md", "docs/23-milestone-acceptance-matrix.md"],
+    "current_status_snapshot": "PROJECT_STATUS.md top R0 snapshot added; old material marked historical ledger",
+    "m7_renderer_operational_state": "PARTIAL retained_non_active_evidence",
+    "r0_task_graph_ids": [
+      "RR0-REPOSITORY-STATE-RECONCILIATION-001",
+      "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+      "RR0-STATUS-LEDGER-COMPACTION-001",
+      "RR0-EXIT-VALIDATION-001"
+    ],
+    "r1_tasks_created": false,
+    "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "stale_client_thread_id": "019f1f02-6d7b-72a0-86db-8945be6b0606",
+    "stale_client_thread_close_agent_result": "not_found",
+    "autonomous_goal_mode_enabled": true,
+    "human_gate_required": false
+  }
+}
