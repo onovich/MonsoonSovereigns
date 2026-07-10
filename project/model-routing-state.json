@@ -21,20 +21,20 @@
     "task_ids": [
       "RR0-EXIT-VALIDATION-001"
     ],
-    "status": "active_r0_exit_request_changes_fix",
+    "status": "active_r0_exit_qa_r2_review",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "branch_or_worktree": "codex/rr0-exit-validation-001",
-    "updated_at": "2026-07-10T13:13:00.962Z",
+    "updated_at": "2026-07-10T13:36:26.045Z",
     "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
     "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
     "next_ready_tasks_after_acceptance": [
       "RR0-EXIT-VALIDATION-001"
     ],
-    "next_action": "Track original systems_architect 019f4c06-5c8f-7552-9baf-47c1e609b024 fixing QA REQUEST_CHANGES from edf959d3; keep R1 frozen."
+    "next_action": "Track the same independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 reviewing R2 commits fb8e05a0 and 97db3991; keep R1 frozen."
   },
   "retired_lead_threads": [
     {
@@ -1970,32 +1970,34 @@
       "task_ids": [
         "RR0-EXIT-VALIDATION-001"
       ],
-      "status": "active_r0_exit_request_changes_fix",
+      "status": "active_r0_exit_qa_r2_review",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "updated_at": "2026-07-10T13:13:00.962Z",
+      "updated_at": "2026-07-10T13:36:26.045Z",
       "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
       "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
       "next_ready_tasks_after_acceptance": [
         "RR0-EXIT-VALIDATION-001"
       ],
-      "next_action": "Track original systems_architect 019f4c06-5c8f-7552-9baf-47c1e609b024 fixing QA REQUEST_CHANGES from edf959d3; keep R1 frozen."
+      "next_action": "Track the same independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 reviewing R2 commits fb8e05a0 and 97db3991; keep R1 frozen."
     },
     {
-      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+      "thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
       "task_id": "RR0-EXIT-VALIDATION-001",
-      "status": "active_r0_exit_r2_state_repair",
-      "role": "systems_architect",
+      "status": "active_read_only_r0_exit_r2_review",
+      "role": "qa_reviewer",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json",
-      "updated_at": "2026-07-10T13:13:00.962Z"
+      "review_target_commit": "fb8e05a0237a53819d34d6361f1b869e5397a626",
+      "review_metadata_commit": "97db3991fa7ff7d0163786979cfd9d47d390c2c4",
+      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
+      "updated_at": "2026-07-10T13:36:26.045Z"
     }
   ],
   "task_effects": {
@@ -2233,7 +2235,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "跟踪原 systems_architect 修复 QA REQUEST_CHANGES；R0 Gate 通过前不得创建 R1 任务。",
+  "next_action": "跟踪同一独立 qa_reviewer 对 R2 修复的复核；R0 Gate 通过前不得创建 R1 任务。",
   "current_task": "RR0-EXIT-VALIDATION-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2439,7 +2441,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-10T13:13:00.962Z",
+  "last_updated_at": "2026-07-10T13:36:26.045Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -4212,24 +4214,24 @@
   },
   "active_task_routes": {
     "RR0-EXIT-VALIDATION-001": {
-      "status": "REQUEST_CHANGES_ROUTED_R2",
-      "route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-QA-REQUEST-CHANGES-TO-SYSTEMS-R2.json",
-      "from_role": "qa_reviewer",
-      "to_role": "systems_architect",
-      "to_thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json"
+      "status": "REVIEW_ROUTED_QA_R2",
+      "route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R2-TO-QA-R2-REVIEW.json",
+      "from_role": "systems_architect",
+      "to_role": "qa_reviewer",
+      "to_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
+      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json"
     }
   },
   "active_routes": {
     "RR0-EXIT-VALIDATION-001": {
-      "status": "REQUEST_CHANGES_ROUTED_R2",
-      "route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-QA-REQUEST-CHANGES-TO-SYSTEMS-R2.json",
-      "from_role": "qa_reviewer",
-      "to_role": "systems_architect",
-      "to_thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json"
+      "status": "REVIEW_ROUTED_QA_R2",
+      "route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R2-TO-QA-R2-REVIEW.json",
+      "from_role": "systems_architect",
+      "to_role": "qa_reviewer",
+      "to_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
+      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json"
     }
   },
   "tasks": {
