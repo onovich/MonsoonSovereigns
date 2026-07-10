@@ -2,18 +2,18 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "project": "Monsoon Sovereigns",
-  "origin_main": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
+  "origin_main": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
   "current_milestone": "R0",
   "current_task": "RR0-EXIT-VALIDATION-001",
   "current_tasks": [
     "RR0-EXIT-VALIDATION-001"
   ],
-  "current_task_status": "ACCEPTED",
-  "last_closed_task": "RR0-STATUS-LEDGER-COMPACTION-001",
-  "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
-  "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
+  "current_task_status": "CLOSED",
+  "last_closed_task": "RR0-EXIT-VALIDATION-001",
+  "last_integrated_task": "RR0-EXIT-VALIDATION-001",
+  "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
   "ready_tasks": [],
   "next_ready_tasks": [],
   "active_threads": {
@@ -23,18 +23,18 @@
       "task_ids": [
         "RR0-EXIT-VALIDATION-001"
       ],
-      "status": "active_r0_exit_integration",
+      "status": "active_r1_task_graph_pending",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "updated_at": "2026-07-10T17:10:42.745Z",
-      "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
-      "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
+      "updated_at": "2026-07-10T17:31:57.269Z",
+      "last_integrated_task": "RR0-EXIT-VALIDATION-001",
+      "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
       "next_ready_tasks": [],
-      "next_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence."
+      "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main."
     }
   },
   "unresolved_risks": [
@@ -53,8 +53,8 @@
     {
       "id": "R0-EXIT-PENDING",
       "severity": "R2",
-      "status": "accepted_pending_main_integration",
-      "summary": "R0 exit validation has independent QA ACCEPT and remains pending PR, CI, and origin/main integration; R1 task graph creation remains frozen."
+      "status": "closed_r0_gate_pass",
+      "summary": "R0 exit validation is CLOSED at origin/main@81b11f1a; R0_GATE=PASS and controlled R1 task graph planning is the next action."
     }
   ],
   "human_gate": {
@@ -69,11 +69,11 @@
     "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
     "next_ready_task": null
   },
-  "next_machine_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence.",
+  "next_machine_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-07-10T17:10:42.745Z",
+  "last_updated_at": "2026-07-10T17:31:57.269Z",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -308,7 +308,7 @@
   },
   "task_id": "RR0-EXIT-VALIDATION-001",
   "from_role": "lead_orchestrator",
-  "summary": "R0 Exit systems R3 and independent QA R3 review are accepted. Lead integration gates pass; RR0-EXIT-VALIDATION-001 remains ACCEPTED pending PR, CI, merge, and origin/main synchronization. R1 remains frozen until R0 closure.",
+  "summary": "RR0-EXIT-VALIDATION-001 is CLOSED after PR #249 passed required CI and entered origin/main at 81b11f1a7a0210591cd266b8fcf6a47edd6da554. R0_GATE=PASS. The next action is to create and independently review the controlled R1 task graph before starting R1 implementation.",
   "artifacts": [
     "PROJECT_STATUS.md",
     "project/tasks/active/RR0-EXIT-VALIDATION-001.json",
@@ -321,7 +321,7 @@
     "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json"
   ],
   "branch_or_worktree": "D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption @ codex/rr0-exit-validation-001",
-  "commit": "352c822405202072b46548e5826242e966db6817",
+  "commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
   "tests_run": [
     {
       "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-ROADMAP-ADOPTION-001",
@@ -430,7 +430,7 @@
   ],
   "blockers": [],
   "route_to": "lead_orchestrator",
-  "requested_action": "Push the accepted R0 Exit branch, open the PR, wait for all required CI, merge, synchronize origin/main, and only then close RR0-EXIT-VALIDATION-001 and record R0_GATE=PASS.",
+  "requested_action": "Create RR1-TASK-GRAPH-001 on a controlled branch, route it to systems architect and independent QA, integrate it through PR and CI, and only then start the highest-priority READY R1 implementation task.",
   "created_at": "2026-07-10T23:07:18+08:00",
   "m7_district_inspector_quality": {
     "status": "CLOSED",
@@ -522,8 +522,8 @@
     "systems_route_sent_at": "2026-06-28T22:43:36.568Z",
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
-  "next_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence.",
-  "updated_at": "2026-07-10T17:10:42.745Z",
+  "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main.",
+  "updated_at": "2026-07-10T17:31:57.269Z",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -1277,36 +1277,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "active_task_routes": {
-    "RR0-EXIT-VALIDATION-001": {
-      "status": "QA_ACCEPTED_PENDING_MAIN_INTEGRATION",
-      "from_role": "qa_reviewer",
-      "from_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
-      "to_role": "lead_orchestrator",
-      "to_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
-      "source_route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R3-TO-QA-R3-REVIEW.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
-      "reviewed_commit": "9b5ea4659d79ff9676cdb6d6c4417d6cd3742979",
-      "qa_handoff_commit": "352c822405202072b46548e5826242e966db6817",
-      "delivery_status": "recorded_same_lead_thread"
-    }
-  },
-  "active_routes": {
-    "RR0-EXIT-VALIDATION-001": {
-      "status": "QA_ACCEPTED_PENDING_MAIN_INTEGRATION",
-      "from_role": "qa_reviewer",
-      "from_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
-      "to_role": "lead_orchestrator",
-      "to_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
-      "source_route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R3-TO-QA-R3-REVIEW.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
-      "reviewed_commit": "9b5ea4659d79ff9676cdb6d6c4417d6cd3742979",
-      "qa_handoff_commit": "352c822405202072b46548e5826242e966db6817",
-      "delivery_status": "recorded_same_lead_thread"
-    }
-  },
+  "active_task_routes": {},
+  "active_routes": {},
   "human_gate_required": false,
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",

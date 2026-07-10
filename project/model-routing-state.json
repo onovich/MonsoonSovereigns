@@ -21,18 +21,18 @@
     "task_ids": [
       "RR0-EXIT-VALIDATION-001"
     ],
-    "status": "active_r0_exit_integration",
+    "status": "active_r1_task_graph_pending",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "branch_or_worktree": "codex/rr0-exit-validation-001",
-    "updated_at": "2026-07-10T17:10:42.745Z",
-    "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
-    "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
+    "updated_at": "2026-07-10T17:31:57.269Z",
+    "last_integrated_task": "RR0-EXIT-VALIDATION-001",
+    "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
     "next_ready_tasks_after_acceptance": [],
-    "next_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence."
+    "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main."
   },
   "retired_lead_threads": [
     {
@@ -1968,18 +1968,18 @@
       "task_ids": [
         "RR0-EXIT-VALIDATION-001"
       ],
-      "status": "active_r0_exit_integration",
+      "status": "active_r1_task_graph_pending",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "updated_at": "2026-07-10T17:10:42.745Z",
-      "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
-      "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
+      "updated_at": "2026-07-10T17:31:57.269Z",
+      "last_integrated_task": "RR0-EXIT-VALIDATION-001",
+      "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
       "next_ready_tasks_after_acceptance": [],
-      "next_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence."
+      "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main."
     }
   ],
   "task_effects": {
@@ -2217,7 +2217,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence.",
+  "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main.",
   "current_task": "RR0-EXIT-VALIDATION-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2268,7 +2268,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-07-10T17:10:42.745Z",
+  "updated_at": "2026-07-10T17:31:57.269Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2423,7 +2423,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-10T17:10:42.745Z",
+  "last_updated_at": "2026-07-10T17:31:57.269Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -4194,36 +4194,8 @@
       "M7-UI-REGRESSION-MATRIX-001"
     ]
   },
-  "active_task_routes": {
-    "RR0-EXIT-VALIDATION-001": {
-      "status": "QA_ACCEPTED_PENDING_MAIN_INTEGRATION",
-      "from_role": "qa_reviewer",
-      "from_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
-      "to_role": "lead_orchestrator",
-      "to_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
-      "source_route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R3-TO-QA-R3-REVIEW.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
-      "reviewed_commit": "9b5ea4659d79ff9676cdb6d6c4417d6cd3742979",
-      "qa_handoff_commit": "352c822405202072b46548e5826242e966db6817",
-      "delivery_status": "recorded_same_lead_thread"
-    }
-  },
-  "active_routes": {
-    "RR0-EXIT-VALIDATION-001": {
-      "status": "QA_ACCEPTED_PENDING_MAIN_INTEGRATION",
-      "from_role": "qa_reviewer",
-      "from_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
-      "to_role": "lead_orchestrator",
-      "to_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
-      "source_route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R3-TO-QA-R3-REVIEW.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
-      "reviewed_commit": "9b5ea4659d79ff9676cdb6d6c4417d6cd3742979",
-      "qa_handoff_commit": "352c822405202072b46548e5826242e966db6817",
-      "delivery_status": "recorded_same_lead_thread"
-    }
-  },
+  "active_task_routes": {},
+  "active_routes": {},
   "tasks": {
     "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001": {
       "owner_role": "client_engineer",
@@ -5052,8 +5024,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence.",
-  "current_task_status": "ACCEPTED",
+  "next_machine_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main.",
+  "current_task_status": "CLOSED",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",
@@ -5113,7 +5085,7 @@
     "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock."
   },
   "current_milestone": "R0",
-  "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
+  "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
   "ready_tasks": [],
   "next_ready_tasks": [],
   "m7_strategic_terrain_recovery": {
@@ -5149,7 +5121,7 @@
       "M7-STRATEGIC-TERRAIN-SCHEMA-001"
     ]
   },
-  "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
+  "last_integrated_task": "RR0-EXIT-VALIDATION-001",
   "m7_strategic_terrain_schema": {
     "task_id": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
     "status": "CLOSED",

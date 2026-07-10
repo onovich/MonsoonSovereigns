@@ -1,6 +1,6 @@
 # 项目当前状态
 
-更新时间：2026-07-10
+更新时间：2026-07-11
 
 前向 Roadmap：[`docs/29-product-recovery-roadmap.md`](docs/29-product-recovery-roadmap.md)
 
@@ -8,10 +8,10 @@
 
 ## 当前阶段
 
-- 当前前向阶段：**R0 / Recovery Baseline**。
-- 当前任务：`RR0-EXIT-VALIDATION-001`，状态 `ACCEPTED`（systems R3 与独立 QA R3 均通过，等待 PR、CI 与 main 集成）。
-- 当前分支：`codex/rr0-exit-validation-001`。
-- 任务基线：`origin/main@e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0`。
+- 当前前向阶段：**R0 / Recovery Baseline 已完成**；`R0_GATE=PASS`。
+- 当前任务：`RR0-EXIT-VALIDATION-001`，状态 `CLOSED`；下一动作是建立并复核受控 R1 task graph。
+- 当前分支：`codex/rr0-exit-validation-closure`。
+- 当前 main：`origin/main@81b11f1a7a0210591cd266b8fcf6a47edd6da554`（PR #249）。
 - Autonomous Goal Mode：enabled；`human_gate.required=false`。
 - 唯一 active lead：`019eff50-c69d-7612-a90b-7024a47e0af5`。
 - 未创建、未启动任何 R1 实现任务。
@@ -24,8 +24,9 @@
 | `RR0-REPOSITORY-STATE-RECONCILIATION-001` | CLOSED | PR #243，closure PR #244，`7878027f2211cc2421e1cee56a8b2dae2deb8f0b` |
 | `RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001` | CLOSED | PR #245，closure PR #246，`3164c9a5a20794aa4d82300baaa6ac5aa10b31c8` |
 | `RR0-STATUS-LEDGER-COMPACTION-001` | CLOSED | PR #247，`92f5800143a7987128898526d20ee2df13f48c67` |
+| `RR0-EXIT-VALIDATION-001` | CLOSED | PR #249，`81b11f1a7a0210591cd266b8fcf6a47edd6da554`，systems PASS recommendation，独立 QA ACCEPT |
 
-R0 剩余任务仅有 `RR0-EXIT-VALIDATION-001`。只有 R0 Gate 通过后才允许建立 R1 task graph。
+R0 全部任务已 CLOSED，`R0_GATE=PASS`。允许建立受控 R1 task graph，但在该 task graph 经 systems/QA 复核并进入 main 前不得启动 R1 实现。
 
 ## 产品运行时事实
 
@@ -39,7 +40,7 @@ R0 剩余任务仅有 `RR0-EXIT-VALIDATION-001`。只有 R0 Gate 通过后才允
 
 - 受控 worktree 共 2 个：当前 RR0 worktree，以及保留 M7 renderer 部分成果的原工作区。
 - `M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001` 为 `PARTIAL` 历史证据，不是 operational active work；原工作区保持 20 条既有 status entry，未清理、未覆盖。
-- R0 Exit systems 与 QA 线程均已关闭；当前仅唯一 Lead 执行最终 PR、CI 与 main 集成。
+- R0 Exit systems 与 QA 线程均已关闭；当前仅唯一 Lead 执行 closure 与 R1 task graph 规划。
 - 任务图、leadership、模型路由和恢复状态分别以 `project/tasks/active`、`project/tasks/thread-registry.json`、`project/model-routing-state.json` 与 `project/goal-mode-state.json` 为准。
 
 ## 决定与边界
@@ -57,6 +58,6 @@ R0 剩余任务仅有 `RR0-EXIT-VALIDATION-001`。只有 R0 Gate 通过后才允
 
 ## 下一动作
 
-1. Lead 推送 `codex/rr0-exit-validation-001`，创建 PR 并等待全部必需 CI。
-2. CI 通过后合并；只有 `origin/main` 包含 accepted evidence 后才把任务置为 `CLOSED` 并记录 `R0_GATE=PASS`。
-3. 只有 Gate 与 CI 都通过后才关闭 R0；此前保持 R1 冻结。
+1. 将 R0 closure 状态通过 PR 与 CI 进入 main。
+2. 在新 main 上创建最小 `RR1-TASK-GRAPH-001`，由 systems architect 编制、独立 QA 复核。
+3. 只有 R1 task graph 进入 main 后才启动最高优先级 READY 的 R1 实现任务。
