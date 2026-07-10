@@ -8,18 +8,18 @@
         "task_ids": [
           "RR1-WEB-WORKER-RUNTIME-001"
         ],
-        "status": "active_monitoring_rr1_web_worker_runtime",
+        "status": "active_monitoring_rr1_web_worker_runtime_replacement",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "branch_or_worktree": "codex/rr1-web-worker-runtime-001",
-        "updated_at": "2026-07-11T04:42:30.5858352+08:00",
+        "updated_at": "2026-07-11T05:06:02.9190925+08:00",
         "last_integrated_task": "RR1-TASK-GRAPH-001",
         "last_main_commit": "e6e81419e626f4146b1e54aeea69016db5d20027",
         "next_ready_tasks": [],
-        "next_action": "Await Lantern/client_engineer writer REVIEW handoff for RR1-WEB-WORKER-RUNTIME-001, then route to systems_architect and qa_reviewer; do not start other R1 tasks in parallel."
+        "next_action": "Await Window/replacement client_engineer writer REVIEW handoff for RR1-WEB-WORKER-RUNTIME-001, then route to systems_architect and qa_reviewer; do not start other R1 tasks in parallel."
       }
     ],
     "retired_leads": [
@@ -8778,17 +8778,18 @@
     "RR1-WEB-WORKER-RUNTIME-001:client_engineer": {
       "task_id": "RR1-WEB-WORKER-RUNTIME-001",
       "role": "client_engineer",
-      "thread_id": "019f4dc4-40d7-77b2-96d3-0319ca51a714",
-      "nickname": "Lantern",
-      "status": "active_writing_worker_runtime_foundation",
+      "thread_id": "019f4dd9-d7de-7b52-8432-a43b5bf38b93",
+      "nickname": "Window",
+      "status": "active_replacement_writing_worker_runtime_foundation",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "codex/rr1-web-worker-runtime-001",
-      "route_file": "project/messages/routes/RR1-WEB-WORKER-RUNTIME-001__ROUTE-20260711-LEAD-TO-CLIENT-START.json",
+      "route_file": "project/messages/routes/RR1-WEB-WORKER-RUNTIME-001__ROUTE-20260711-LEAD-TO-CLIENT-REPLACEMENT-START.json",
       "expected_handoff": "project/messages/outbox/RR1-WEB-WORKER-RUNTIME-001__MSG-20260711-WRITER-REVIEW__client_engineer.json",
-      "updated_at": "2026-07-11T04:42:30.5858352+08:00"
+      "replaces_thread_id": "019f4dc4-40d7-77b2-96d3-0319ca51a714",
+      "updated_at": "2026-07-11T05:06:02.9190925+08:00"
     }
   },
   "replaced_threads": [
@@ -8986,9 +8987,23 @@
       "replaced_by_nickname": "Canary",
       "reason": "previous_writer_running_no_handoff_after_repeated_waits_and_status_check_clean_worktree",
       "replaced_at": "2026-06-30T04:29:17.193Z"
+    },
+    {
+      "thread_id": "019f4dc4-40d7-77b2-96d3-0319ca51a714",
+      "role": "client_engineer",
+      "task_id": "RR1-WEB-WORKER-RUNTIME-001",
+      "thread_nickname": "Lantern",
+      "status": "closed_running_no_handoff_clean_worktree",
+      "close_agent_previous_status": "running",
+      "handoff_received": false,
+      "worktree_diff_present": false,
+      "status_request_submission_id": "019f4dd4-4c6f-7c72-978e-c0ea5ec34fed",
+      "closed_at": "2026-07-11T05:06:02.9190925+08:00",
+      "replaced_by": "019f4dd9-d7de-7b52-8432-a43b5bf38b93",
+      "replaced_by_nickname": "Window"
     }
   ],
-  "updated_at": "2026-07-11T04:42:30.5858352+08:00",
+  "updated_at": "2026-07-11T05:06:02.9190925+08:00",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
@@ -9237,6 +9252,20 @@
       "close_agent_result": "not_found_after_completed_notification",
       "fabricated_close_success": false,
       "close_agent_checked_at": "2026-07-11T03:27:00.0000000+08:00"
+    },
+    {
+      "thread_id": "019f4dc4-40d7-77b2-96d3-0319ca51a714",
+      "role": "client_engineer",
+      "task_id": "RR1-WEB-WORKER-RUNTIME-001",
+      "thread_nickname": "Lantern",
+      "status": "closed_running_no_handoff_clean_worktree",
+      "close_agent_previous_status": "running",
+      "handoff_received": false,
+      "worktree_diff_present": false,
+      "status_request_submission_id": "019f4dd4-4c6f-7c72-978e-c0ea5ec34fed",
+      "closed_at": "2026-07-11T05:06:02.9190925+08:00",
+      "replaced_by": "019f4dd9-d7de-7b52-8432-a43b5bf38b93",
+      "replaced_by_nickname": "Window"
     }
   ],
   "threads": {
