@@ -12,41 +12,45 @@
       "task_ids": [
         "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001"
       ],
-      "status": "active_r0_production_fixture_audit_review",
+      "status": "active_r0_production_fixture_audit_changes_requested",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
-      "updated_at": "2026-07-10T11:02:43.279Z",
+      "updated_at": "2026-07-10T11:18:06.576Z",
       "last_integrated_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
       "last_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
       "next_ready_tasks_after_acceptance": [],
-      "next_action": "Track independent qa_reviewer inspection of writer commit 3391fdbc; retain the systems_architect thread only for a possible REQUEST_CHANGES loop."
+      "next_action": "Track the original systems_architect correcting two future timestamps, then route the minimal fix back to the same qa_reviewer."
     },
     "systems_architect": {
       "thread_id": "019f4b98-80d7-7623-a6f3-86205e788366",
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
-      "status": "review_waiting",
+      "status": "active_fixing_qa_request_changes",
       "role": "systems_architect",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
       "writer_commit": "3391fdbcfe50448f0b41cc98b3b786969af9671d",
       "writer_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-WRITER-REVIEW__systems_architect.json",
-      "updated_at": "2026-07-10T11:02:43.279Z"
+      "qa_request_changes_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
+      "qa_request_changes_commit": "a669dc62a195828540bf7e50e305561ccbb4f060",
+      "updated_at": "2026-07-10T11:18:06.576Z"
     },
     "qa_reviewer": {
       "thread_id": "019f4bb1-6e0f-75f0-967e-05f3da603f5f",
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
-      "status": "active_read_only_review",
+      "status": "request_changes_complete_waiting_re_review",
       "role": "qa_reviewer",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
       "review_target_commit": "3391fdbcfe50448f0b41cc98b3b786969af9671d",
-      "updated_at": "2026-07-10T11:02:43.279Z"
+      "review_commit": "a669dc62a195828540bf7e50e305561ccbb4f060",
+      "review_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
+      "updated_at": "2026-07-10T11:18:06.576Z"
     }
   },
   "last_integrated_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
@@ -953,7 +957,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-07-10T11:02:43.279Z",
+  "last_updated_at": "2026-07-10T11:18:06.576Z",
   "updated_at": "2026-07-01T23:21:47.0897812+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2022,7 +2026,7 @@
     ]
   },
   "current_task_status": "REVIEW",
-  "next_machine_action": "Wait for independent QA verdict on writer commit 3391fdbc; route REQUEST_CHANGES to the same systems_architect or ACCEPT to lead integration.",
+  "next_machine_action": "Wait for the original systems_architect to correct only the two impossible future timestamps, then send the fix to the same qa_reviewer.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
