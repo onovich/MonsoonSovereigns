@@ -21,20 +21,20 @@
     "task_ids": [
       "RR0-REPOSITORY-STATE-RECONCILIATION-001"
     ],
-    "status": "active_r0_reconciliation_in_progress",
+    "status": "active_r0_reconciliation_review",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "branch_or_worktree": "codex/rr0-repository-state-reconciliation-001",
-    "updated_at": "2026-07-10T08:22:46.513Z",
+    "updated_at": "2026-07-10T08:27:58.870Z",
     "last_integrated_task": "RR0-ROADMAP-ADOPTION-001",
     "last_main_commit": "23f9e0870304c1af70ec9e652dff17788259db59",
     "next_ready_tasks_after_acceptance": [
       "RR0-REPOSITORY-STATE-RECONCILIATION-001"
     ],
-    "next_action": "Inventory repository, worktrees, branches, task graph, thread state, and retained M7 partial evidence without changing product code."
+    "next_action": "Route the reconciliation REVIEW handoff and inventory to one independent QA reviewer."
   },
   "retired_lead_threads": [
     {
@@ -1970,20 +1970,20 @@
       "task_ids": [
         "RR0-REPOSITORY-STATE-RECONCILIATION-001"
       ],
-      "status": "active_r0_reconciliation_in_progress",
+      "status": "active_r0_reconciliation_review",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-repository-state-reconciliation-001",
-      "updated_at": "2026-07-10T08:22:46.513Z",
+      "updated_at": "2026-07-10T08:27:58.870Z",
       "last_integrated_task": "RR0-ROADMAP-ADOPTION-001",
       "last_main_commit": "23f9e0870304c1af70ec9e652dff17788259db59",
       "next_ready_tasks_after_acceptance": [
         "RR0-REPOSITORY-STATE-RECONCILIATION-001"
       ],
-      "next_action": "Inventory repository, worktrees, branches, task graph, thread state, and retained M7 partial evidence without changing product code."
+      "next_action": "Route the reconciliation REVIEW handoff and inventory to one independent QA reviewer."
     }
   ],
   "task_effects": {
@@ -2221,7 +2221,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "清点仓库、worktree、branch、任务图、线程和保留的 M7 部分改动；不修改业务代码。",
+  "next_action": "将 reconciliation REVIEW handoff 与 inventory 路由给一个独立 qa_reviewer。",
   "current_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2427,7 +2427,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-10T08:22:46.513Z",
+  "last_updated_at": "2026-07-10T08:27:58.870Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -5050,8 +5050,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Complete the RR0 repository/worktree/thread inventory, write a REVIEW handoff, and route it to one independent QA reviewer.",
-  "current_task_status": "IN_PROGRESS",
+  "next_machine_action": "Validate and route the RR0 reconciliation REVIEW handoff to one independent QA reviewer; do not start downstream work before ACCEPT and main integration.",
+  "current_task_status": "REVIEW",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",

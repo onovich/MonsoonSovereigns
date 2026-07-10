@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "task_id": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
+  "audited_at": "2026-07-10T08:27:04.776Z",
+  "origin_main": "23f9e0870304c1af70ec9e652dff17788259db59",
+  "worktrees": [
+    {
+      "path": "D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption",
+      "branch": "codex/rr0-repository-state-reconciliation-001",
+      "head": "aee2283f179580bb77d7d0be0b5931f226459304",
+      "purpose": "active R0 process worktree reused from roadmap adoption",
+      "operational_status": "active_known",
+      "product_changes": false,
+      "cleanup_decision": "retain and reuse; do not create a third worktree"
+    },
+    {
+      "path": "D:/WebProjects/MonsoonSovereigns",
+      "branch": "codex/m7-strategic-terrain-renderer-interaction",
+      "head": "a27bef87e4cd4471e976bb1db8136d777d040ed5",
+      "merge_base_with_origin_main": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
+      "origin_main_ahead_count": 11,
+      "branch_ahead_count": 1,
+      "status_entries": 20,
+      "tracked_modified_entries": 15,
+      "untracked_entries": 5,
+      "tracked_diff_insertions": 2910,
+      "tracked_diff_deletions": 227,
+      "operational_status": "retained_non_active_partial_evidence",
+      "product_changes": true,
+      "cleanup_decision": "preserve untouched; do not delete, reset, move, merge, or resume during R0 reconciliation"
+    }
+  ],
+  "m7_partial_evidence": {
+    "canonical_task_status": "PARTIAL",
+    "canonical_task_file": "project/tasks/active/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001.json",
+    "start_handoff": "D:/WebProjects/MonsoonSovereigns/project/messages/outbox/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001__MSG-20260702-M7-STRATEGIC-TERRAIN-RENDERER-START__lead_orchestrator.json",
+    "writer_handoff": "D:/WebProjects/MonsoonSovereigns/project/messages/outbox/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001__MSG-20260702-M7-STRATEGIC-TERRAIN-RENDERER-WRITER-REVIEW__client_engineer.json",
+    "route_file": "D:/WebProjects/MonsoonSovereigns/project/messages/routes/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001__ROUTE-20260702-LEAD-TO-CLIENT-START.json",
+    "writer_declared_status": "PARTIAL",
+    "writer_handoff_schema_valid": false,
+    "writer_handoff_schema_findings": [
+      "uses from/to/ROUTE_TO instead of required from_role/route_to fields",
+      "summary is an array instead of the required non-empty string",
+      "required message_id, branch_or_worktree, requested_action, created_at, artifacts, decisions, risks, blockers, and commit fields are missing",
+      "tests_run exit_code fields are missing and results are textual",
+      "map-renderer test final success, build, Storybook, E2E, pnpm check, screenshots, and full task validation were not completed"
+    ],
+    "acceptance_effect": "not accepted and not dependency-ready; retain only as partial evidence for a later explicit disposition task"
+  },
+  "branch_inventory": {
+    "local_branch_count": 29,
+    "merged_into_origin_main_count": 8,
+    "unmerged_local_branch_count": 21,
+    "origin_remote_ref_count_excluding_head": 27,
+    "unmerged_local_branches": [
+      "chore/close-m7-design-tokens-asset-slots",
+      "chore/close-m7-player-guidance-lite",
+      "chore/m2-client-district-list-close",
+      "chore/m2-econ-pop-close",
+      "chore/m2-route-transport-close",
+      "chore/sim-003-close-after-integration",
+      "chore/sim-006-close-after-integration",
+      "codex/close-m7-map-topology-fixture",
+      "codex/close-m7-save-migration-cloud-boundaries",
+      "codex/m7-map-topology-fixture",
+      "codex/m7-map-topology-schema",
+      "codex/m7-save-migration-cloud-boundaries",
+      "codex/m7-strategic-terrain-renderer-interaction",
+      "codex/rr0-repository-state-reconciliation-001",
+      "feat/m2-client-district-list",
+      "feat/m2-economy-population",
+      "feat/m2-route-transport",
+      "feat/m7-design-tokens-asset-slots",
+      "feat/m7-player-guidance-lite",
+      "feat/sim-003-command-query-v1",
+      "feat/sim-006-content-compiler-v0"
+    ],
+    "cleanup_decision": "No branch is deleted in this task. Only two branches have active worktrees; historical unmerged branches require explicit ownership/disposition evidence before deletion."
+  },
+  "task_graph": {
+    "RR0-ROADMAP-ADOPTION-001": "CLOSED",
+    "RR0-REPOSITORY-STATE-RECONCILIATION-001": "IN_PROGRESS",
+    "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001": "DRAFT",
+    "RR0-STATUS-LEDGER-COMPACTION-001": "DRAFT",
+    "RR0-EXIT-VALIDATION-001": "DRAFT",
+    "rr1_task_file_count": 0
+  },
+  "thread_state": {
+    "unique_active_lead_check": "PASS",
+    "active_lead_count": 1,
+    "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "active_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
+    "active_writer_or_reviewer_threads": [],
+    "stale_m7_client_thread_id": "019f1f02-6d7b-72a0-86db-8945be6b0606",
+    "stale_m7_client_status": "stale_not_found_closed",
+    "stale_m7_close_agent_result": "not_found",
+    "fabricated_close_success": false
+  },
+  "reconciliation_result": "CONSISTENT_WITH_RETAINED_PARTIAL_WORKTREE",
+  "unresolved_risks": [
+    "The retained M7 worktree contains substantial unreviewed product changes and a nonconforming PARTIAL handoff.",
+    "Twenty historical local branches are unmerged besides the active reconciliation branch; they are inventoried but not deleted without explicit disposition evidence."
+  ]
+}
