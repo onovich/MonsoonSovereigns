@@ -15,11 +15,11 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
-        "updated_at": "2026-07-10T11:52:41.759Z",
+        "updated_at": "2026-07-10T11:57:31.920Z",
         "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
         "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
         "next_ready_tasks_after_acceptance": [],
-        "next_action": "Route the status/history compaction diff to independent QA and preserve the lead-owned implementation unchanged during review."
+        "next_action": "Track independent QA review of status/history compaction commit 8c5bf0fe."
       }
     ],
     "retired_leads": [
@@ -8561,11 +8561,12 @@
       "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "review_pending_independent_qa",
+      "status": "review_qa_active",
       "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
       "base_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
       "review_handoff": "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-LEAD-REVIEW__lead_orchestrator.json",
-      "updated_at": "2026-07-10T11:52:41.759Z"
+      "review_commit": "8c5bf0fe",
+      "updated_at": "2026-07-10T11:57:31.920Z"
     },
     "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001:systems_architect:attempt-1": {
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
@@ -8619,6 +8620,16 @@
       "qa_r2_review_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
       "closed_at": "2026-07-10T11:26:53.533Z",
       "updated_at": "2026-07-10T11:26:53.533Z"
+    },
+    "RR0-STATUS-LEDGER-COMPACTION-001:qa_reviewer": {
+      "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f4be3-8fcf-7ca0-89d6-1c135efc5d37",
+      "status": "active_read_only_review",
+      "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
+      "review_target_commit": "8c5bf0fe",
+      "started_at": "2026-07-10T11:57:31.920Z",
+      "updated_at": "2026-07-10T11:57:31.910Z"
     }
   },
   "replaced_threads": [
@@ -8818,7 +8829,7 @@
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
   ],
-  "updated_at": "2026-07-10T11:02:43.283Z",
+  "updated_at": "2026-07-10T11:57:31.910Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
