@@ -4,24 +4,24 @@
     "active_leads": [
       {
         "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-        "task_id": "RR0-ROADMAP-ADOPTION-001",
+        "task_id": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
         "task_ids": [
-          "RR0-ROADMAP-ADOPTION-001"
+          "RR0-REPOSITORY-STATE-RECONCILIATION-001"
         ],
-        "status": "active_r0_roadmap_adoption_accepted_pending_integration",
+        "status": "active_r0_reconciliation_ready",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
-        "branch_or_worktree": "codex/rr0-roadmap-adoption",
-        "updated_at": "2026-07-10T08:03:07.031Z",
-        "last_integrated_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
-        "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
+        "branch_or_worktree": "codex/close-rr0-roadmap-adoption",
+        "updated_at": "2026-07-10T08:11:51.937Z",
+        "last_integrated_task": "RR0-ROADMAP-ADOPTION-001",
+        "last_main_commit": "bcaa1acda247f41aaa9cc41029270a1cfb02ed36",
         "next_ready_tasks_after_acceptance": [
           "RR0-REPOSITORY-STATE-RECONCILIATION-001"
         ],
-        "next_action": "Open PR, wait for required CI, merge to main, then close RR0-ROADMAP-ADOPTION-001."
+        "next_action": "Integrate the adoption closure record, then start RR0-REPOSITORY-STATE-RECONCILIATION-001."
       }
     ],
     "retired_leads": [
@@ -8508,8 +8508,10 @@
       "task_id": "RR0-ROADMAP-ADOPTION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_pr_integration",
-      "updated_at": "2026-07-10T08:03:07.031Z"
+      "status": "closed_after_pr_ci_and_main_integration",
+      "integrated_pr": 241,
+      "integrated_main_commit": "bcaa1acda247f41aaa9cc41029270a1cfb02ed36",
+      "updated_at": "2026-07-10T08:11:51.937Z"
     },
     "RR0-ROADMAP-ADOPTION-001:qa_reviewer": {
       "task_id": "RR0-ROADMAP-ADOPTION-001",
@@ -8520,6 +8522,13 @@
       "review_commit": "45b9a4391096969eed0d67891f6710be48d2c30b",
       "closed_at": "2026-07-10T08:03:07.031Z",
       "updated_at": "2026-07-10T08:03:07.031Z"
+    },
+    "RR0-REPOSITORY-STATE-RECONCILIATION-001:lead_orchestrator": {
+      "task_id": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "ready_after_dependency_main_integration",
+      "updated_at": "2026-07-10T08:11:51.937Z"
     }
   },
   "replaced_threads": [
@@ -8719,7 +8728,7 @@
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
   ],
-  "updated_at": "2026-07-10T07:55:16.026Z",
+  "updated_at": "2026-07-10T08:11:51.311Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",

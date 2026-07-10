@@ -2,7 +2,7 @@
   "id": "RR0-ROADMAP-ADOPTION-001",
   "summary": "Adopt the accepted product recovery roadmap and create the minimal R0 task graph",
   "milestone": "R0",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "required_reviewers": ["qa_reviewer"],
@@ -77,14 +77,20 @@
     "Old client_engineer thread 019f1f02-6d7b-72a0-86db-8945be6b0606 is recorded as stale/not-found/closed based on real close_agent not_found result."
   ],
   "created_at": "2026-07-10T14:48:00+08:00",
-  "updated_at": "2026-07-10T08:03:07.031Z",
+  "updated_at": "2026-07-10T08:11:51.937Z",
   "human_gate_required": false,
   "approval_source": "Product owner message on 2026-07-10: 可以，接受。",
-  "next_action": "Open PR, wait for required CI, merge to main, then close RR0-ROADMAP-ADOPTION-001 before starting downstream R0 work.",
+  "next_action": "CLOSED after PR #241 and main integration; continue with RR0-REPOSITORY-STATE-RECONCILIATION-001.",
+  "integrated_pr": 241,
+  "integrated_main_commit": "bcaa1acda247f41aaa9cc41029270a1cfb02ed36",
+  "qa_accept_handoff": "project/messages/outbox/RR0-ROADMAP-ADOPTION-001__MSG-20260710-QA-R4-REVIEW__qa_reviewer.json",
+  "lead_accept_handoff": "project/messages/outbox/RR0-ROADMAP-ADOPTION-001__MSG-20260710-LEAD-ACCEPT-R4__lead_orchestrator.json",
+  "lead_close_handoff": "project/messages/outbox/RR0-ROADMAP-ADOPTION-001__MSG-20260710-CLOSED__lead_orchestrator.json",
+  "closed_at": "2026-07-10T08:11:51.937Z",
   "downstream_tasks": [
     {
       "id": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
-      "status": "DRAFT",
+      "status": "READY",
       "dependencies": ["RR0-ROADMAP-ADOPTION-001"],
       "owner_role": "lead_orchestrator",
       "reviewer_role": "qa_reviewer"
@@ -128,6 +134,9 @@
     "stale_client_thread_id": "019f1f02-6d7b-72a0-86db-8945be6b0606",
     "stale_client_thread_close_agent_result": "not_found",
     "autonomous_goal_mode_enabled": true,
-    "human_gate_required": false
+    "human_gate_required": false,
+    "qa_review_result": "ACCEPT",
+    "integrated_pr": 241,
+    "integrated_main_commit": "bcaa1acda247f41aaa9cc41029270a1cfb02ed36"
   }
 }
