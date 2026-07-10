@@ -39,7 +39,7 @@ R0 剩余任务仅有 `RR0-EXIT-VALIDATION-001`。只有 R0 Gate 通过后才允
 
 - 受控 worktree 共 2 个：当前 RR0 worktree，以及保留 M7 renderer 部分成果的原工作区。
 - `M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001` 为 `PARTIAL` 历史证据，不是 operational active work；原工作区保持 20 条既有 status entry，未清理、未覆盖。
-- R0 runtime-path audit 的 systems writer、research scout 与 QA reviewer 均已关闭；当前没有 active child agent。
+- R0 runtime-path audit 的旧 systems writer、research scout 与 QA reviewer 均已关闭；当前仅有一名 R0 Exit `systems_architect` active，独立 QA 槽位尚未启动。
 - 任务图、leadership、模型路由和恢复状态分别以 `project/tasks/active`、`project/tasks/thread-registry.json`、`project/model-routing-state.json` 与 `project/goal-mode-state.json` 为准。
 
 ## 决定与边界
