@@ -2004,21 +2004,23 @@
       "task_ids": [
         "RR1-TASK-GRAPH-001"
       ],
-      "status": "active_integrating_accepted_rr1_task_graph",
+      "status": "active_selecting_next_r1_ready_task",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/rr1-task-graph-001",
-      "updated_at": "2026-07-11T03:24:31.0522178+08:00",
-      "last_integrated_task": "RR0-EXIT-VALIDATION-001",
-      "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
-      "next_ready_tasks": [],
+      "updated_at": "2026-07-11T03:42:00.0000000+08:00",
+      "last_integrated_task": "RR1-TASK-GRAPH-001",
+      "last_main_commit": "b5228d2e8a6f4d11897475552b8a142ba52270d5",
+      "next_ready_tasks": [
+        "RR1-WEB-WORKER-RUNTIME-001"
+      ],
       "next_ready_tasks_after_graph_closure": [
         "RR1-WEB-WORKER-RUNTIME-001"
       ],
-      "next_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet."
+      "next_action": "RR1-TASK-GRAPH-001 is closed after PR #251 entered origin/main; start RR1-WEB-WORKER-RUNTIME-001 as the only dependency-ready R1 implementation task through a new routed writer/reviewer cycle."
     }
   ],
   "task_effects": {
@@ -2099,9 +2101,7 @@
     "M6-SCENARIO-DATA-PIPELINE-001": "CLOSED after PR #135 entered main at 7f83cd4da1dcd7fdc77be922225bef43c9127c74. Next READY M6 tasks are M6-MAP-CANDIDATE-PIPELINE-001 and M6-SUCCESSION-COMPLETION-001.",
     "M6-MAP-CANDIDATE-PIPELINE-001": "IN_PROGRESS after lead start handoff routed to client_engineer thread 019f07f7-2cfb-7753-b583-283d8542501b on feat/m6-map-candidate-pipeline."
   },
-  "current_tasks": [
-    "RR1-TASK-GRAPH-001"
-  ],
+  "current_tasks": [],
   "m6_scenario_data_pipeline": {
     "status": "CLOSED",
     "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
@@ -2256,7 +2256,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet.",
+  "next_action": "RR1-TASK-GRAPH-001 is closed after PR #251 entered origin/main; start RR1-WEB-WORKER-RUNTIME-001 as the only dependency-ready R1 implementation task through a new routed writer/reviewer cycle.",
   "current_task": "RR1-TASK-GRAPH-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2307,7 +2307,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-07-11T03:27:00.0000000+08:00",
+  "updated_at": "2026-07-11T03:42:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2462,7 +2462,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-11T03:27:00.0000000+08:00",
+  "last_updated_at": "2026-07-11T03:42:00.0000000+08:00",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -5077,7 +5077,7 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet.",
+  "next_machine_action": "RR1-TASK-GRAPH-001 is closed after PR #251 entered origin/main; start RR1-WEB-WORKER-RUNTIME-001 as the only dependency-ready R1 implementation task through a new routed writer/reviewer cycle.",
   "current_task_status": "IN_PROGRESS",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
@@ -5138,9 +5138,13 @@
     "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock."
   },
   "current_milestone": "R1",
-  "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
-  "ready_tasks": [],
-  "next_ready_tasks": [],
+  "last_main_commit": "b5228d2e8a6f4d11897475552b8a142ba52270d5",
+  "ready_tasks": [
+    "RR1-WEB-WORKER-RUNTIME-001"
+  ],
+  "next_ready_tasks": [
+    "RR1-WEB-WORKER-RUNTIME-001"
+  ],
   "m7_strategic_terrain_recovery": {
     "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
     "status": "CLOSED",
@@ -5174,7 +5178,7 @@
       "M7-STRATEGIC-TERRAIN-SCHEMA-001"
     ]
   },
-  "last_integrated_task": "RR0-EXIT-VALIDATION-001",
+  "last_integrated_task": "RR1-TASK-GRAPH-001",
   "m7_strategic_terrain_schema": {
     "task_id": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
     "status": "CLOSED",
@@ -5339,7 +5343,7 @@
     "updated_at": "2026-07-10T07:30:00.000Z"
   },
   "rr1_task_graph": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "RR1-TASK-GRAPH-001",
     "branch_or_worktree": "codex/rr1-task-graph-001",
     "base_origin_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
@@ -5355,7 +5359,7 @@
     "qa_submission_id": "019f4d6a-75bc-7c00-b2c4-3514df9ecd84",
     "lead_accept_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-07-11T03:24:31.0522178+08:00",
-    "r1_implementation_authorized": false,
+    "r1_implementation_authorized": true,
     "child_tasks": [
       "RR1-WEB-WORKER-RUNTIME-001",
       "RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001",
@@ -5368,8 +5372,17 @@
     "next_ready_tasks_after_graph_closure": [
       "RR1-WEB-WORKER-RUNTIME-001"
     ],
-    "next_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet.",
+    "next_action": "RR1-TASK-GRAPH-001 is closed after PR #251 entered origin/main; start RR1-WEB-WORKER-RUNTIME-001 as the only dependency-ready R1 implementation task through a new routed writer/reviewer cycle.",
     "qa_close_agent_result": "not_found_after_completed_notification",
-    "qa_close_agent_checked_at": "2026-07-11T03:27:00.0000000+08:00"
-  }
+    "qa_close_agent_checked_at": "2026-07-11T03:27:00.0000000+08:00",
+    "integrated_pr": 251,
+    "integrated_main_commit": "b5228d2e8a6f4d11897475552b8a142ba52270d5",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/251",
+    "lead_close_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-07-11T03:42:00.0000000+08:00",
+    "next_ready_tasks": [
+      "RR1-WEB-WORKER-RUNTIME-001"
+    ]
+  },
+  "last_closed_task": "RR1-TASK-GRAPH-001"
 }

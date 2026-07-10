@@ -8,21 +8,23 @@
         "task_ids": [
           "RR1-TASK-GRAPH-001"
         ],
-        "status": "active_integrating_accepted_rr1_task_graph",
+        "status": "active_selecting_next_r1_ready_task",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "branch_or_worktree": "codex/rr1-task-graph-001",
-        "updated_at": "2026-07-11T03:24:31.0522178+08:00",
-        "last_integrated_task": "RR0-EXIT-VALIDATION-001",
-        "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
-        "next_ready_tasks": [],
+        "updated_at": "2026-07-11T03:42:00.0000000+08:00",
+        "last_integrated_task": "RR1-TASK-GRAPH-001",
+        "last_main_commit": "b5228d2e8a6f4d11897475552b8a142ba52270d5",
+        "next_ready_tasks": [
+          "RR1-WEB-WORKER-RUNTIME-001"
+        ],
         "next_ready_tasks_after_graph_closure": [
           "RR1-WEB-WORKER-RUNTIME-001"
         ],
-        "next_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet."
+        "next_action": "RR1-TASK-GRAPH-001 is closed after PR #251 entered origin/main; start RR1-WEB-WORKER-RUNTIME-001 as the only dependency-ready R1 implementation task through a new routed writer/reviewer cycle."
       }
     ],
     "retired_leads": [
@@ -8976,7 +8978,7 @@
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
   ],
-  "updated_at": "2026-07-11T03:27:00.0000000+08:00",
+  "updated_at": "2026-07-11T03:42:00.0000000+08:00",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
