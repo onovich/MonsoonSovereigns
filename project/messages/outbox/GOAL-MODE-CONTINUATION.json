@@ -2,7 +2,7 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "project": "Monsoon Sovereigns",
   "origin_main": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
   "current_milestone": "R0",
@@ -10,7 +10,7 @@
   "current_tasks": [
     "RR0-EXIT-VALIDATION-001"
   ],
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "REVIEW",
   "last_closed_task": "RR0-STATUS-LEDGER-COMPACTION-001",
   "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
   "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
@@ -23,30 +23,30 @@
       "task_ids": [
         "RR0-EXIT-VALIDATION-001"
       ],
-      "status": "active_r0_exit_systems_r3_repair",
+      "status": "active_r0_exit_qa_r3_review",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "updated_at": "2026-07-10T14:51:03.780Z",
+      "updated_at": "2026-07-10T15:07:18.476Z",
       "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
       "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
       "next_ready_tasks": [],
-      "next_action": "Track the same systems_architect 019f4c06-5c8f-7552-9baf-47c1e609b024 performing the QA-requested R3 coordination repair."
+      "next_action": "Route the systems R3 REVIEW handoff to the same independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 for R3 verification; keep R1 frozen."
     },
-    "systems_architect": {
-      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+    "qa_reviewer": {
+      "thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
       "task_id": "RR0-EXIT-VALIDATION-001",
-      "status": "active_r0_exit_r3_repair",
-      "role": "systems_architect",
+      "status": "active_r0_exit_qa_r3_review",
+      "role": "qa_reviewer",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json",
-      "updated_at": "2026-07-10T14:51:03.780Z"
+      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json",
+      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
+      "updated_at": "2026-07-10T15:07:18.476Z"
     }
   },
   "unresolved_risks": [
@@ -65,8 +65,8 @@
     {
       "id": "R0-EXIT-PENDING",
       "severity": "R2",
-      "status": "ready",
-      "summary": "R0 exit validation has not yet passed; R1 task graph creation remains frozen."
+      "status": "review",
+      "summary": "R0 exit validation is in REVIEW with the same independent qa_reviewer; R1 task graph creation remains frozen."
     }
   ],
   "human_gate": {
@@ -79,13 +79,13 @@
     "note": "No active Human Gate. Complete RR0-EXIT-VALIDATION-001 before creating or starting R1 work.",
     "recorded_at": "2026-07-10T07:30:00.000Z",
     "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
-    "next_ready_task": "RR0-EXIT-VALIDATION-001"
+    "next_ready_task": null
   },
-  "next_machine_action": "Track the same systems_architect performing the QA-requested R3 coordination repair; do not start R1.",
+  "next_machine_action": "Route the systems R3 REVIEW handoff to the same independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 for R3 verification; keep R1 frozen.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-07-10T14:51:03.780Z",
+  "last_updated_at": "2026-07-10T15:07:18.476Z",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -320,79 +320,54 @@
   },
   "task_id": "RR0-EXIT-VALIDATION-001",
   "from_role": "lead_orchestrator",
-  "summary": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is CLOSED after PR #189 passed CI, merged, and entered origin/main at 10f3fd7ff866e6cbee26b58d08036dd70fb9bb6b. The task added local M7 save migration compatibility boundaries for accepted M1-M6 saves, kept M7 Beta content-lock candidate manifests on the Human Gate path, and kept cloud save candidate-only with no account/network/telemetry/secrets/provider implementation.",
+  "summary": "R0 Exit systems R3 coordination repair is ready for independent QA review. PROJECT_STATUS, task, goal-mode, model-routing, continuation, thread registry, readiness arrays, root actions, and route surfaces now consistently identify RR0-EXIT-VALIDATION-001 as REVIEW; R1 remains frozen.",
   "artifacts": [
-    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-CLOSED__lead_orchestrator.json",
-    "project/tasks/active/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001.json",
+    "PROJECT_STATUS.md",
+    "project/tasks/active/RR0-EXIT-VALIDATION-001.json",
+    "project/tasks/thread-registry.json",
     "project/goal-mode-state.json",
     "project/model-routing-state.json",
-    "project/tasks/thread-registry.json",
     "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
-    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-LEAD-ACCEPT__lead_orchestrator.json",
-    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-R2-REVIEW__qa_reviewer.json",
-    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json"
+    "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-QA-R2-REQUEST-CHANGES-TO-SYSTEMS-R3.json",
+    "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json"
   ],
-  "branch_or_worktree": "codex/m7-map-topology-client",
-  "commit": "e53184eb36bb2cd224cec93878eb2561076c73c5",
-  "tests_run": [
-    {
-      "command": "gh pr checks 189 --watch",
-      "exit_code": 0,
-      "result": "Quality, Web, and Browser Smoke passed in 2m42s; Windows Desktop Smoke Artifact passed in 1m3s."
-    },
-    {
-      "command": "gh pr merge 189 --squash --delete-branch=false",
-      "exit_code": 0,
-      "result": "PR #189 merged."
-    },
-    {
-      "command": "git fetch origin --prune; git checkout main; git pull --ff-only origin main; git log -1 --oneline --decorate",
-      "exit_code": 0,
-      "result": "origin/main synchronized at 10f3fd7ff866e6cbee26b58d08036dd70fb9bb6b."
-    },
-    {
-      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
-      "exit_code": 0,
-      "result": "Task valid after main integration."
-    },
-    {
-      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
-      "exit_code": 0,
-      "result": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001, M7-PERFORMANCE-MEMORY-LOADING-001, M7-UI-REGRESSION-MATRIX-001"
-    }
-  ],
+  "branch_or_worktree": "D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption @ codex/rr0-exit-validation-001",
+  "commit": null,
+  "tests_run": [],
   "decisions": [
     {
-      "id": "TASK_CLOSED_AFTER_MAIN_INTEGRATION",
-      "decision": "Mark task CLOSED only after PR #189 passed CI, merged, and origin/main contained the accepted changes."
+      "id": "R3_ROOT_STATE_RECONCILIATION",
+      "decision": "All current lifecycle, readiness, root action, continuation, active-thread, and active-route surfaces target RR0 Exit QA R3 review; historical nested M7 records remain unchanged."
     },
     {
-      "id": "NEXT_READY_SELECTION",
-      "decision": "Next dependency-ready M7 tasks are large-scale balance, performance/memory/loading, and UI regression matrix. Selection will be recomputed before starting the next task."
-    },
-    {
-      "id": "HUMAN_GATE_STATE",
-      "decision": "No Human Gate is active; cloud-save enablement, irreversible migration, account/network persistence, telemetry/accounts/secrets, and frozen save/platform decisions remain Human Gates."
+      "id": "R1_FREEZE",
+      "decision": "No R1 task or implementation is authorized before independent QA acceptance and Lead closure."
     }
   ],
   "risks": [
     {
-      "id": "FORMAL_CONTENT_LOCK_PENDING",
-      "severity": "P2",
-      "summary": "Formal M7 content lock acceptance remains a future Human Gate and is not approved by this task.",
-      "mitigation": "M7 candidate manifests remain human-gate-required until formal acceptance."
+      "id": "R1-AUTHORITATIVE-CLIENT-RUNTIME-GAP",
+      "severity": "R4",
+      "status": "recorded_for_r1",
+      "summary": "Normal Web/Electron paths still lack authoritative Worker command/query/save/load/time-control wiring."
     },
     {
-      "id": "NEXT_M7_VALIDATION_LOAD",
-      "severity": "P3",
-      "summary": "Balance, performance/loading, and UI regression validation tasks remain open.",
-      "mitigation": "Continue to the next dependency-ready M7 task after closure enters main."
+      "id": "M7-RETAINED-PARTIAL-WORKTREE",
+      "severity": "R3",
+      "status": "preserved_non_operational",
+      "summary": "The protected M7 worktree retains 20 pre-existing status entries and must remain untouched."
     }
   ],
-  "blockers": [],
-  "route_to": "systems_architect",
-  "requested_action": "Await gameplay_designer REVIEW handoff for ADR-011 and downstream strategic terrain recovery task chain.",
-  "created_at": "2026-06-28T16:11:45.503Z",
+  "blockers": [
+    {
+      "id": "R3-VALIDATION-PENDING",
+      "summary": "The complete R0 Gate matrix must be rerun after Lead applies this draft."
+    }
+  ],
+  "route_to": "qa_reviewer",
+  "requested_action": "Independently review the systems R3 coordination repair after its commit and test evidence are bound. Re-run lifecycle, ready/next, root action, continuation, route/thread, forbidden-path, worktree, M7, R1, JSON, taskctl, and handoff assertions.",
+  "created_at": "2026-07-10T23:07:18+08:00",
   "m7_district_inspector_quality": {
     "status": "CLOSED",
     "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
@@ -483,8 +458,8 @@
     "systems_route_sent_at": "2026-06-28T22:43:36.568Z",
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
-  "next_action": "The same systems_architect performs the QA-requested R3 coordination repair and returns a REVIEW handoff to the same qa_reviewer; R1 remains frozen.",
-  "updated_at": "2026-07-01T23:21:47.0897812+08:00",
+  "next_action": "Route the systems R3 REVIEW handoff to the same independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 for R3 verification; keep R1 frozen.",
+  "updated_at": "2026-07-10T15:07:18.476Z",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -1240,24 +1215,26 @@
   },
   "active_task_routes": {
     "RR0-EXIT-VALIDATION-001": {
-      "status": "REQUEST_CHANGES_ROUTED_SYSTEMS_R3",
-      "route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-QA-R2-REQUEST-CHANGES-TO-SYSTEMS-R3.json",
-      "from_role": "qa_reviewer",
-      "to_role": "systems_architect",
-      "to_thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json"
+      "status": "REVIEW_READY_QA_R3",
+      "from_role": "lead_orchestrator",
+      "from_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "to_role": "qa_reviewer",
+      "to_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
+      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json",
+      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
+      "delivery_status": "pending_lead_route_registration"
     }
   },
   "active_routes": {
     "RR0-EXIT-VALIDATION-001": {
-      "status": "REQUEST_CHANGES_ROUTED_SYSTEMS_R3",
-      "route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-QA-R2-REQUEST-CHANGES-TO-SYSTEMS-R3.json",
-      "from_role": "qa_reviewer",
-      "to_role": "systems_architect",
-      "to_thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json"
+      "status": "REVIEW_READY_QA_R3",
+      "from_role": "lead_orchestrator",
+      "from_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "to_role": "qa_reviewer",
+      "to_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
+      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json",
+      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
+      "delivery_status": "pending_lead_route_registration"
     }
   },
   "human_gate_required": false,
