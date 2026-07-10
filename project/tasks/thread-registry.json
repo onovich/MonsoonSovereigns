@@ -8,20 +8,20 @@
         "task_ids": [
           "RR0-ROADMAP-ADOPTION-001"
         ],
-        "status": "active_r0_roadmap_adoption_review",
+        "status": "active_r0_roadmap_adoption_accepted_pending_integration",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "branch_or_worktree": "codex/rr0-roadmap-adoption",
-        "updated_at": "2026-07-10T07:30:00.000Z",
+        "updated_at": "2026-07-10T08:03:07.031Z",
         "last_integrated_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
         "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
         "next_ready_tasks_after_acceptance": [
           "RR0-REPOSITORY-STATE-RECONCILIATION-001"
         ],
-        "next_action": "Route RR0-ROADMAP-ADOPTION-001 REVIEW handoff to qa_reviewer."
+        "next_action": "Open PR, wait for required CI, merge to main, then close RR0-ROADMAP-ADOPTION-001."
       }
     ],
     "retired_leads": [
@@ -8490,8 +8490,8 @@
       "task_id": "RR0-ROADMAP-ADOPTION-001",
       "role": "systems_architect",
       "thread_id": "019f4ac8-3361-74f0-a49b-f7baeaaceda0",
-      "status": "review_ready",
-      "updated_at": "2026-07-10T07:30:00.000Z"
+      "status": "closed_after_valid_r2_handoff",
+      "updated_at": "2026-07-10T08:03:07.031Z"
     },
     "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001:client_engineer:stale:019f1f02-6d7b-72a0-86db-8945be6b0606": {
       "task_id": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
@@ -8508,14 +8508,18 @@
       "task_id": "RR0-ROADMAP-ADOPTION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_r0_roadmap_adoption_review",
-      "updated_at": "2026-07-10T07:30:00.000Z"
+      "status": "accepted_pending_pr_integration",
+      "updated_at": "2026-07-10T08:03:07.031Z"
     },
     "RR0-ROADMAP-ADOPTION-001:qa_reviewer": {
       "task_id": "RR0-ROADMAP-ADOPTION-001",
       "role": "qa_reviewer",
       "thread_id": "019f4b05-d9f7-7273-84ef-8eb2490d1925",
-      "updated_at": "2026-07-10T07:55:16.026Z"
+      "status": "closed_after_accept_review",
+      "review_handoff": "project/messages/outbox/RR0-ROADMAP-ADOPTION-001__MSG-20260710-QA-R4-REVIEW__qa_reviewer.json",
+      "review_commit": "45b9a4391096969eed0d67891f6710be48d2c30b",
+      "closed_at": "2026-07-10T08:03:07.031Z",
+      "updated_at": "2026-07-10T08:03:07.031Z"
     }
   },
   "replaced_threads": [

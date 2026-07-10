@@ -21,20 +21,20 @@
     "task_ids": [
       "RR0-ROADMAP-ADOPTION-001"
     ],
-    "status": "active_r0_roadmap_adoption_review",
+    "status": "active_r0_roadmap_adoption_accepted_pending_integration",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "branch_or_worktree": "codex/rr0-roadmap-adoption",
-    "updated_at": "2026-07-10T07:30:00.000Z",
+    "updated_at": "2026-07-10T08:03:07.031Z",
     "last_integrated_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
     "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
     "next_ready_tasks_after_acceptance": [
       "RR0-REPOSITORY-STATE-RECONCILIATION-001"
     ],
-    "next_action": "等待/执行独立 QA 复审；RR0-ROADMAP-ADOPTION-001 接受前不启动 downstream R0 任务。"
+    "next_action": "Open RR0 roadmap adoption PR, wait for required CI, merge to main, then close the task before starting downstream R0 work."
   },
   "retired_lead_threads": [
     {
@@ -1970,20 +1970,20 @@
       "task_ids": [
         "RR0-ROADMAP-ADOPTION-001"
       ],
-      "status": "active_r0_roadmap_adoption_review",
+      "status": "active_r0_roadmap_adoption_accepted_pending_integration",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-roadmap-adoption",
-      "updated_at": "2026-07-10T07:30:00.000Z",
+      "updated_at": "2026-07-10T08:03:07.031Z",
       "last_integrated_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
       "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
       "next_ready_tasks_after_acceptance": [
         "RR0-REPOSITORY-STATE-RECONCILIATION-001"
       ],
-      "next_action": "等待/执行独立 QA 复审；RR0-ROADMAP-ADOPTION-001 接受前不启动 downstream R0 任务。"
+      "next_action": "Open RR0 roadmap adoption PR, wait for required CI, merge to main, then close the task before starting downstream R0 work."
     }
   ],
   "task_effects": {
@@ -2221,7 +2221,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "等待/执行独立 QA 复审；RR0-ROADMAP-ADOPTION-001 接受前不启动下游 R0 任务。",
+  "next_action": "创建并合并 RR0 Roadmap adoption PR；进入 main 并 CLOSED 后才启动下游 R0 任务。",
   "current_task": "RR0-ROADMAP-ADOPTION-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2427,7 +2427,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-01T04:22:23.8080820+08:00",
+  "last_updated_at": "2026-07-10T08:03:07.031Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -5050,8 +5050,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "等待/执行独立 QA 复审：RR0-ROADMAP-ADOPTION-001 维持 REVIEW，修复 QA REQUEST_CHANGES 后重新路由给 qa_reviewer；验收前不启动下游 R0 任务。",
-  "current_task_status": "REVIEW",
+  "next_machine_action": "Open RR0 roadmap adoption PR, wait for CI, merge to main, then close RR0-ROADMAP-ADOPTION-001 before starting downstream R0 work.",
+  "current_task_status": "ACCEPTED",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",
