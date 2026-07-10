@@ -66,6 +66,7 @@ Only the smallest Worker runtime foundation may become READY after graph integra
 - No `exec_command`, CI watcher, dev server, PR merge, or MCP operation remains running in the outgoing thread.
 - The successor top-level Codex thread was created through `codex_app__create_thread`.
 - Meridian is the only in-flight worker operation to inherit.
+- Successor delivery was completed through `send_message_to_thread`; Meridian received a non-interrupting transfer update through `send_input` submission `019f4d5d-30e2-7532-b279-5d897208343d`.
 
 ## Runtime Facts
 
