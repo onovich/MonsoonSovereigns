@@ -1,0 +1,50 @@
+{
+  "message_id": "MSG-20260710-START",
+  "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start R0 status ledger compaction from origin/main 3164c9a5. Move the complete pre-compaction PROJECT_STATUS into one independent historical ledger, rebuild a concise current snapshot, preserve all M0-M7 evidence and rejected-direction context, and do not modify product code or start R1 work.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/history/PROJECT_STATUS-M0-M7-LEDGER.md",
+    "docs/11-roadmap.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "project/tasks/active/RR0-STATUS-LEDGER-COMPACTION-001.json",
+    "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-START__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption @ codex/rr0-status-ledger-compaction-001",
+  "commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-STATUS-LEDGER-COMPACTION-001",
+      "exit_code": 0,
+      "result": "Task schema valid before kickoff."
+    },
+    {
+      "command": "git worktree list --porcelain",
+      "exit_code": 0,
+      "result": "Exactly two worktrees remain: the protected retained M7 evidence worktree and the reused RR0 worktree."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "EXACT_HISTORY_LEDGER_PATH",
+      "decision": "Reconcile the task scope by adding only project/history/PROJECT_STATUS-M0-M7-LEDGER.md, required by the accepted Roadmap's independent history/ledger deliverable."
+    },
+    {
+      "id": "LEAD_OWNED_COMPACTION",
+      "decision": "The lead_orchestrator performs this process-document compaction directly; one independent qa_reviewer is reserved for acceptance, with no writer agent or new worktree."
+    }
+  ],
+  "risks": [
+    {
+      "id": "HISTORICAL_EVIDENCE_LOSS",
+      "severity": "R4",
+      "summary": "Mechanical compaction could drop old PR, commit, Gate, or product-rejection evidence; the original full file must be preserved intact as the ledger before the concise status is introduced."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Create the independent historical ledger, rebuild a concise current PROJECT_STATUS, update roadmap references, validate scope and evidence preservation, then route to independent QA.",
+  "created_at": "2026-07-10T11:46:41.437Z"
+}

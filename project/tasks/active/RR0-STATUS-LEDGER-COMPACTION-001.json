@@ -2,7 +2,7 @@
   "id": "RR0-STATUS-LEDGER-COMPACTION-001",
   "summary": "Compact current status while preserving M0-M7 historical ledger evidence",
   "milestone": "R0",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "owner_role": "lead_orchestrator",
   "reviewer_role": "qa_reviewer",
   "required_reviewers": [
@@ -21,6 +21,7 @@
       "project/model-routing-state.json",
       "project/messages/**",
       "PROJECT_STATUS.md",
+      "project/history/PROJECT_STATUS-M0-M7-LEDGER.md",
       "docs/11-roadmap.md",
       "docs/23-milestone-acceptance-matrix.md"
     ],
@@ -70,12 +71,19 @@
     "Route REVIEW handoff to qa_reviewer."
   ],
   "created_at": "2026-07-10T07:30:00.000Z",
-  "updated_at": "2026-07-10T11:35:38.276Z",
+  "updated_at": "2026-07-10T11:46:41.437Z",
   "human_gate_required": false,
   "roadmap_source": "docs/29-product-recovery-roadmap.md",
   "no_r1_implementation_authorized": true,
   "ready_after_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
   "ready_after_pr": 245,
   "ready_after_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
-  "next_action": "After the audit closure record enters main, compact PROJECT_STATUS current state while preserving M0-M7 historical ledger evidence, then route to independent QA."
+  "next_action": "Move the full pre-compaction status into the exact independent history ledger path, rebuild a concise current PROJECT_STATUS snapshot, preserve roadmap references, then route to independent QA.",
+  "started_at": "2026-07-10T11:46:41.437Z",
+  "base_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
+  "start_handoff": "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-START__lead_orchestrator.json",
+  "scope_reconciliation": {
+    "added_path": "project/history/PROJECT_STATUS-M0-M7-LEDGER.md",
+    "reason": "docs/29-product-recovery-roadmap.md requires historical milestone records to move into an independent history/ledger; the original task allowed_paths omitted the destination path."
+  }
 }

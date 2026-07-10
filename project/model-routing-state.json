@@ -21,20 +21,18 @@
     "task_ids": [
       "RR0-STATUS-LEDGER-COMPACTION-001"
     ],
-    "status": "active_r0_status_ledger_compaction_ready",
+    "status": "active_r0_status_ledger_compaction_in_progress",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
-    "branch_or_worktree": "codex/close-rr0-production-fixture-noop-audit-001",
-    "updated_at": "2026-07-10T11:35:38.276Z",
+    "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
+    "updated_at": "2026-07-10T11:46:41.437Z",
     "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
-    "last_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
-    "next_ready_tasks_after_acceptance": [
-      "RR0-STATUS-LEDGER-COMPACTION-001"
-    ],
-    "next_action": "Integrate the audit closure record, then start RR0-STATUS-LEDGER-COMPACTION-001 in the reused RR0 worktree."
+    "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
+    "next_ready_tasks_after_acceptance": [],
+    "next_action": "Compact current status into a concise snapshot and an independent historical ledger, then route to independent QA."
   },
   "retired_lead_threads": [
     {
@@ -1970,20 +1968,18 @@
       "task_ids": [
         "RR0-STATUS-LEDGER-COMPACTION-001"
       ],
-      "status": "active_r0_status_ledger_compaction_ready",
+      "status": "active_r0_status_ledger_compaction_in_progress",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-rr0-production-fixture-noop-audit-001",
-      "updated_at": "2026-07-10T11:35:38.276Z",
+      "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
+      "updated_at": "2026-07-10T11:46:41.437Z",
       "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
-      "last_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
-      "next_ready_tasks_after_acceptance": [
-        "RR0-STATUS-LEDGER-COMPACTION-001"
-      ],
-      "next_action": "Integrate the audit closure record, then start RR0-STATUS-LEDGER-COMPACTION-001 in the reused RR0 worktree."
+      "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
+      "next_ready_tasks_after_acceptance": [],
+      "next_action": "Compact current status into a concise snapshot and an independent historical ledger, then route to independent QA."
     }
   ],
   "task_effects": {
@@ -2221,7 +2217,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "集成 production/fixture/no-op audit 关闭记录，然后启动 status ledger compaction。",
+  "next_action": "压缩当前状态并建立独立历史 ledger，然后路由独立 QA。",
   "current_task": "RR0-STATUS-LEDGER-COMPACTION-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2427,7 +2423,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-10T11:35:38.276Z",
+  "last_updated_at": "2026-07-10T11:46:41.437Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -5050,8 +5046,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Integrate the audit closure record, then start RR0-STATUS-LEDGER-COMPACTION-001 in the reused RR0 worktree.",
-  "current_task_status": "READY",
+  "next_machine_action": "Compact PROJECT_STATUS into a concise current snapshot plus independent historical ledger, then route to independent QA.",
+  "current_task_status": "IN_PROGRESS",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",
@@ -5111,10 +5107,8 @@
     "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock."
   },
   "current_milestone": "R0",
-  "last_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
-  "next_ready_tasks": [
-    "RR0-STATUS-LEDGER-COMPACTION-001"
-  ],
+  "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
+  "next_ready_tasks": [],
   "m7_strategic_terrain_recovery": {
     "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
     "status": "CLOSED",
