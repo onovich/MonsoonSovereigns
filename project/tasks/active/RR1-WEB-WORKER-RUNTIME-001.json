@@ -1,0 +1,82 @@
+{
+  "id": "RR1-WEB-WORKER-RUNTIME-001",
+  "summary": "Build the production Web simulation Worker runtime foundation",
+  "milestone": "R1",
+  "status": "DRAFT",
+  "owner_role": "client_engineer",
+  "reviewer_role": "systems_architect",
+  "required_reviewers": ["systems_architect", "qa_reviewer"],
+  "risk_level": "R4",
+  "dependencies": ["RR1-TASK-GRAPH-001"],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/src/worker/**",
+      "apps/web/src/runtime/**",
+      "apps/web/src/main.tsx",
+      "packages/client-core/src/simulation-runtime/**",
+      "packages/client-core/src/index.ts",
+      "packages/protocol/src/**",
+      "tests/rr1-web-worker-runtime*.test.ts",
+      "tests/rr1-web-worker-runtime/**",
+      "project/tasks/active/RR1-WEB-WORKER-RUNTIME-001.json",
+      "project/messages/outbox/RR1-WEB-WORKER-RUNTIME-001__*.json",
+      "project/messages/routes/RR1-WEB-WORKER-RUNTIME-001__*.json"
+    ],
+    "forbidden_paths": [
+      "apps/desktop/**",
+      "packages/sim-core/**",
+      "packages/ui/**",
+      "packages/map-renderer/**",
+      "packages/platform/**",
+      "packages/save-format/**",
+      "content-source/**",
+      ".github/**",
+      "tools/**",
+      "package.json",
+      "pnpm-lock.yaml",
+      "docs/29-product-recovery-roadmap.md",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Normal Web startup boots a dedicated production simulation Worker through a versioned SimulationPort transport; the existing hello adapter, fixture snapshot, canary, Storybook, or test harness cannot satisfy production boot.",
+    "The Worker owns WorldState and executes sim-core; browser main-thread React, renderer, client-core stores, and Electron surfaces never import or call sim-core state mutation APIs directly.",
+    "The production transport supports Boot, Query, Preview, Submit, Read Model subscription, Save, Load, and SetSpeed request families with serializable envelopes, correlation IDs, protocol versioning, explicit errors, and deterministic ordering.",
+    "Boot, graceful shutdown, unexpected termination, reconnect, and recovery expose bounded lifecycle states and cannot report success while no authoritative Worker session exists.",
+    "A new Worker session invalidates stale request, response, delta, and command-generation data from the prior session; duplicate or late messages cannot mutate or acknowledge the new authority.",
+    "Browser and Node contract runners boot the same seed/content inputs to the same initial deterministic state hash, while the in-process adapter remains test-only.",
+    "The foundation publishes stable integration seams for later command, read-model, time-control, and save tasks without fixture fallbacks or local-success placeholders."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm --filter @monsoon/client-core typecheck",
+    "pnpm --filter web typecheck",
+    "pnpm --filter web test",
+    "pnpm --filter web build",
+    "pnpm architecture:check",
+    "pnpm sim:determinism",
+    "pnpm exec vitest run tests/rr1-web-worker-runtime*.test.ts",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR1-WEB-WORKER-RUNTIME-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "codex/rr1-web-worker-runtime-001",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "This is the only child eligible after RR1-TASK-GRAPH-001 is CLOSED on origin/main.",
+    "Any protocol addition must remain minimal, schema-validated, serializable, and shared by Web and Electron clients.",
+    "No product implementation starts from DRAFT; Lead must transition and route this task after graph integration."
+  ],
+  "created_at": "2026-07-10T18:20:58.343Z",
+  "updated_at": "2026-07-10T18:20:58.343Z",
+  "human_gate_required": false,
+  "roadmap_source": "docs/29-product-recovery-roadmap.md",
+  "activation_condition": "RR1-TASK-GRAPH-001 is CLOSED on origin/main"
+}

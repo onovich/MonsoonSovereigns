@@ -16,25 +16,34 @@
     "fallback": null
   },
   "current_lead_thread": {
-    "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "task_id": "RR0-EXIT-VALIDATION-001",
+    "thread_id": "019f4d4f-3856-7d63-8b33-e1bf1b9be9ca",
+    "task_id": "RR1-TASK-GRAPH-001",
     "task_ids": [
-      "RR0-EXIT-VALIDATION-001"
+      "RR1-TASK-GRAPH-001"
     ],
-    "status": "active_r1_task_graph_pending",
+    "status": "active_r1_task_graph_takeover",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
-    "actual_model": "gpt-5.5",
+    "actual_model": "unknown",
     "actual_effort": "xhigh",
-    "branch_or_worktree": "codex/rr0-exit-validation-001",
-    "updated_at": "2026-07-10T17:31:57.269Z",
+    "branch_or_worktree": "codex/rr1-task-graph-001",
+    "updated_at": "2026-07-10T18:35:23.708Z",
     "last_integrated_task": "RR0-EXIT-VALIDATION-001",
-    "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
+    "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
     "next_ready_tasks_after_acceptance": [],
-    "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main."
+    "next_action": "Take over the running systems_architect graph draft without interruption, then reuse the closed qa_reviewer for independent review before graph integration."
   },
   "retired_lead_threads": [
+    {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "role": "lead_orchestrator",
+      "status": "retired_after_user_requested_handoff",
+      "reason": "USER_REQUESTED_COMPLETE_THREAD_HANDOFF",
+      "successor_thread_id": "019f4d4f-3856-7d63-8b33-e1bf1b9be9ca",
+      "handoff_document": "project/messages/outbox/LEAD-THREAD-HANDOFF-20260711.md",
+      "retired_at": "2026-07-10T18:35:23.708Z"
+    },
     {
       "thread_id": null,
       "role": "lead_orchestrator",
@@ -1959,27 +1968,57 @@
       "accepted_task_reopened": false,
       "fabricated_close_success": false,
       "recorded_at": "2026-07-10T07:30:00.000Z"
+    },
+    {
+      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+      "role": "systems_architect",
+      "task_id": "RR1-TASK-GRAPH-001",
+      "thread_nickname": "Meridian",
+      "status": "closed_after_valid_review_handoff_and_qa_accept",
+      "route_file": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-LEAD-TO-SYSTEMS-START.json",
+      "review_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
+      "review_commit": "542b0761168d2b3f5d06bff758fa4f5eb823ccab",
+      "binding_commit": "030e5315cb04a967b1ae89b494f31e733a4b5682",
+      "closed_at": "2026-07-11T03:24:31.0522178+08:00"
+    },
+    {
+      "thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
+      "role": "qa_reviewer",
+      "task_id": "RR1-TASK-GRAPH-001",
+      "thread_nickname": "Auditor",
+      "status": "closed_after_accept_handoff_to_lead",
+      "route_file": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-SYSTEMS-TO-QA-REVIEW.json",
+      "review_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-QA-REVIEW__qa_reviewer.json",
+      "review_commit": "030e5315cb04a967b1ae89b494f31e733a4b5682",
+      "submission_id": "019f4d6a-75bc-7c00-b2c4-3514df9ecd84",
+      "closed_at": "2026-07-11T03:24:31.0522178+08:00",
+      "close_agent_result": "not_found_after_completed_notification",
+      "fabricated_close_success": false,
+      "close_agent_checked_at": "2026-07-11T03:27:00.0000000+08:00"
     }
   ],
   "active_threads": [
     {
-      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "RR0-EXIT-VALIDATION-001",
+      "thread_id": "019f4d4f-3856-7d63-8b33-e1bf1b9be9ca",
+      "task_id": "RR1-TASK-GRAPH-001",
       "task_ids": [
-        "RR0-EXIT-VALIDATION-001"
+        "RR1-TASK-GRAPH-001"
       ],
-      "status": "active_r1_task_graph_pending",
+      "status": "active_integrating_accepted_rr1_task_graph",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "updated_at": "2026-07-10T17:31:57.269Z",
+      "branch_or_worktree": "codex/rr1-task-graph-001",
+      "updated_at": "2026-07-11T03:24:31.0522178+08:00",
       "last_integrated_task": "RR0-EXIT-VALIDATION-001",
-      "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
-      "next_ready_tasks_after_acceptance": [],
-      "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main."
+      "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
+      "next_ready_tasks": [],
+      "next_ready_tasks_after_graph_closure": [
+        "RR1-WEB-WORKER-RUNTIME-001"
+      ],
+      "next_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet."
     }
   ],
   "task_effects": {
@@ -2061,7 +2100,7 @@
     "M6-MAP-CANDIDATE-PIPELINE-001": "IN_PROGRESS after lead start handoff routed to client_engineer thread 019f07f7-2cfb-7753-b583-283d8542501b on feat/m6-map-candidate-pipeline."
   },
   "current_tasks": [
-    "RR0-EXIT-VALIDATION-001"
+    "RR1-TASK-GRAPH-001"
   ],
   "m6_scenario_data_pipeline": {
     "status": "CLOSED",
@@ -2217,8 +2256,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main.",
-  "current_task": "RR0-EXIT-VALIDATION-001",
+  "next_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet.",
+  "current_task": "RR1-TASK-GRAPH-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2268,7 +2307,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-07-10T17:31:57.269Z",
+  "updated_at": "2026-07-11T03:27:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2423,7 +2462,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-10T17:31:57.269Z",
+  "last_updated_at": "2026-07-11T03:27:00.0000000+08:00",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -4195,7 +4234,21 @@
     ]
   },
   "active_task_routes": {},
-  "active_routes": {},
+  "active_routes": {
+    "RR1-TASK-GRAPH-001": {
+      "role": "systems_architect",
+      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "status": "START_ROUTE_SENT",
+      "route_file": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-LEAD-TO-SYSTEMS-START.json",
+      "expected_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
+      "submission_id": "019f4d38-4d67-7742-a0e3-574117f4ae36",
+      "updated_at": "2026-07-10T18:09:52.187Z"
+    }
+  },
   "tasks": {
     "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001": {
       "owner_role": "client_engineer",
@@ -5024,8 +5077,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main.",
-  "current_task_status": "CLOSED",
+  "next_machine_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet.",
+  "current_task_status": "IN_PROGRESS",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",
@@ -5084,8 +5137,8 @@
     "strategic_terrain_recovery_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
     "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock."
   },
-  "current_milestone": "R0",
-  "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
+  "current_milestone": "R1",
+  "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
   "ready_tasks": [],
   "next_ready_tasks": [],
   "m7_strategic_terrain_recovery": {
@@ -5284,5 +5337,39 @@
     ],
     "r1_tasks_created": false,
     "updated_at": "2026-07-10T07:30:00.000Z"
+  },
+  "rr1_task_graph": {
+    "status": "ACCEPTED",
+    "task_id": "RR1-TASK-GRAPH-001",
+    "branch_or_worktree": "codex/rr1-task-graph-001",
+    "base_origin_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
+    "source_head_commit": "030e5315cb04a967b1ae89b494f31e733a4b5682",
+    "systems_thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+    "systems_status": "REVIEW",
+    "systems_review_commit": "542b0761168d2b3f5d06bff758fa4f5eb823ccab",
+    "systems_review_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
+    "qa_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-QA-REVIEW__qa_reviewer.json",
+    "qa_route": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-SYSTEMS-TO-QA-REVIEW.json",
+    "qa_submission_id": "019f4d6a-75bc-7c00-b2c4-3514df9ecd84",
+    "lead_accept_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-07-11T03:24:31.0522178+08:00",
+    "r1_implementation_authorized": false,
+    "child_tasks": [
+      "RR1-WEB-WORKER-RUNTIME-001",
+      "RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001",
+      "RR1-READ-MODEL-DELTA-001",
+      "RR1-AUTHORITATIVE-TIME-CONTROLS-001",
+      "RR1-SAVE-LOAD-RESTART-001",
+      "RR1-HERMETIC-E2E-001",
+      "RR1-EXIT-VALIDATION-001"
+    ],
+    "next_ready_tasks_after_graph_closure": [
+      "RR1-WEB-WORKER-RUNTIME-001"
+    ],
+    "next_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet.",
+    "qa_close_agent_result": "not_found_after_completed_notification",
+    "qa_close_agent_checked_at": "2026-07-11T03:27:00.0000000+08:00"
   }
 }

@@ -2,39 +2,42 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "CLOSED",
+  "status": "ACCEPTED",
   "project": "Monsoon Sovereigns",
-  "origin_main": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
-  "current_milestone": "R0",
-  "current_task": "RR0-EXIT-VALIDATION-001",
+  "origin_main": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
+  "current_milestone": "R1",
+  "current_task": "RR1-TASK-GRAPH-001",
   "current_tasks": [
-    "RR0-EXIT-VALIDATION-001"
+    "RR1-TASK-GRAPH-001"
   ],
-  "current_task_status": "CLOSED",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "RR0-EXIT-VALIDATION-001",
   "last_integrated_task": "RR0-EXIT-VALIDATION-001",
-  "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
+  "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
   "ready_tasks": [],
   "next_ready_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
-      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "RR0-EXIT-VALIDATION-001",
+      "thread_id": "019f4d4f-3856-7d63-8b33-e1bf1b9be9ca",
+      "task_id": "RR1-TASK-GRAPH-001",
       "task_ids": [
-        "RR0-EXIT-VALIDATION-001"
+        "RR1-TASK-GRAPH-001"
       ],
-      "status": "active_r1_task_graph_pending",
+      "status": "active_integrating_accepted_rr1_task_graph",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "updated_at": "2026-07-10T17:31:57.269Z",
+      "branch_or_worktree": "codex/rr1-task-graph-001",
+      "updated_at": "2026-07-11T03:24:31.0522178+08:00",
       "last_integrated_task": "RR0-EXIT-VALIDATION-001",
-      "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
+      "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
       "next_ready_tasks": [],
-      "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main."
+      "next_ready_tasks_after_graph_closure": [
+        "RR1-WEB-WORKER-RUNTIME-001"
+      ],
+      "next_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet."
     }
   },
   "unresolved_risks": [
@@ -64,16 +67,18 @@
     "approval_source": "Product owner message on 2026-07-10: 可以，接受。",
     "decision_result": "ACCEPT_ROADMAP",
     "decision_options": [],
-    "note": "No active Human Gate. Complete RR0-EXIT-VALIDATION-001 before creating or starting R1 work.",
+    "note": "No active Human Gate. R0_GATE=PASS; review and integrate RR1-TASK-GRAPH-001 before starting R1 product implementation.",
     "recorded_at": "2026-07-10T07:30:00.000Z",
-    "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
+    "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
     "next_ready_task": null
   },
-  "next_machine_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main.",
+  "next_machine_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
-  "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-07-10T17:31:57.269Z",
+  "successor_thread_id": "019f4d4f-3856-7d63-8b33-e1bf1b9be9ca",
+  "outgoing_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "lead_handoff_document": "project/messages/outbox/LEAD-THREAD-HANDOFF-20260711.md",
+  "last_updated_at": "2026-07-11T03:27:00.0000000+08:00",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -308,7 +313,7 @@
   },
   "task_id": "RR0-EXIT-VALIDATION-001",
   "from_role": "lead_orchestrator",
-  "summary": "RR0-EXIT-VALIDATION-001 is CLOSED after PR #249 passed required CI and entered origin/main at 81b11f1a7a0210591cd266b8fcf6a47edd6da554. R0_GATE=PASS. The next action is to create and independently review the controlled R1 task graph before starting R1 implementation.",
+  "summary": "RR1 task graph has systems REVIEW and independent QA ACCEPT recorded; Lead is running final integration gates before PR/CI/merge. R1 product implementation remains disabled until graph closure on origin/main.",
   "artifacts": [
     "PROJECT_STATUS.md",
     "project/tasks/active/RR0-EXIT-VALIDATION-001.json",
@@ -522,8 +527,8 @@
     "systems_route_sent_at": "2026-06-28T22:43:36.568Z",
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
-  "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main.",
-  "updated_at": "2026-07-10T17:31:57.269Z",
+  "next_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet.",
+  "updated_at": "2026-07-11T03:27:00.0000000+08:00",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -1278,7 +1283,17 @@
     ]
   },
   "active_task_routes": {},
-  "active_routes": {},
+  "active_routes": {
+    "RR1-TASK-GRAPH-001": {
+      "role": "systems_architect",
+      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+      "status": "START_ROUTE_SENT",
+      "route_file": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-LEAD-TO-SYSTEMS-START.json",
+      "expected_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
+      "submission_id": "019f4d38-4d67-7742-a0e3-574117f4ae36",
+      "updated_at": "2026-07-10T18:09:52.187Z"
+    }
+  },
   "human_gate_required": false,
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
@@ -1503,5 +1518,68 @@
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "updated_at": "2026-07-01T23:21:47.0897812+08:00",
     "next_action": "Start renderer/interaction replacement work using accepted terrain-route-node schema and fixture."
-  }
+  },
+  "rr1_task_graph": {
+    "status": "ACCEPTED",
+    "task_id": "RR1-TASK-GRAPH-001",
+    "branch_or_worktree": "codex/rr1-task-graph-001",
+    "base_origin_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
+    "source_head_commit": "030e5315cb04a967b1ae89b494f31e733a4b5682",
+    "systems_thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+    "systems_status": "REVIEW",
+    "systems_review_commit": "542b0761168d2b3f5d06bff758fa4f5eb823ccab",
+    "systems_review_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
+    "qa_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-QA-REVIEW__qa_reviewer.json",
+    "qa_route": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-SYSTEMS-TO-QA-REVIEW.json",
+    "qa_submission_id": "019f4d6a-75bc-7c00-b2c4-3514df9ecd84",
+    "lead_accept_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-07-11T03:24:31.0522178+08:00",
+    "r1_implementation_authorized": false,
+    "child_tasks": [
+      "RR1-WEB-WORKER-RUNTIME-001",
+      "RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001",
+      "RR1-READ-MODEL-DELTA-001",
+      "RR1-AUTHORITATIVE-TIME-CONTROLS-001",
+      "RR1-SAVE-LOAD-RESTART-001",
+      "RR1-HERMETIC-E2E-001",
+      "RR1-EXIT-VALIDATION-001"
+    ],
+    "next_ready_tasks_after_graph_closure": [
+      "RR1-WEB-WORKER-RUNTIME-001"
+    ],
+    "next_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet.",
+    "qa_close_agent_result": "not_found_after_completed_notification",
+    "qa_close_agent_checked_at": "2026-07-11T03:27:00.0000000+08:00"
+  },
+  "closed_threads": [
+    {
+      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+      "role": "systems_architect",
+      "task_id": "RR1-TASK-GRAPH-001",
+      "thread_nickname": "Meridian",
+      "status": "closed_after_valid_review_handoff_and_qa_accept",
+      "route_file": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-LEAD-TO-SYSTEMS-START.json",
+      "review_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
+      "review_commit": "542b0761168d2b3f5d06bff758fa4f5eb823ccab",
+      "binding_commit": "030e5315cb04a967b1ae89b494f31e733a4b5682",
+      "closed_at": "2026-07-11T03:24:31.0522178+08:00"
+    },
+    {
+      "thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
+      "role": "qa_reviewer",
+      "task_id": "RR1-TASK-GRAPH-001",
+      "thread_nickname": "Auditor",
+      "status": "closed_after_accept_handoff_to_lead",
+      "route_file": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-SYSTEMS-TO-QA-REVIEW.json",
+      "review_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-QA-REVIEW__qa_reviewer.json",
+      "review_commit": "030e5315cb04a967b1ae89b494f31e733a4b5682",
+      "submission_id": "019f4d6a-75bc-7c00-b2c4-3514df9ecd84",
+      "closed_at": "2026-07-11T03:24:31.0522178+08:00",
+      "close_agent_result": "not_found_after_completed_notification",
+      "fabricated_close_success": false,
+      "close_agent_checked_at": "2026-07-11T03:27:00.0000000+08:00"
+    }
+  ]
 }

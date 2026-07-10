@@ -1,0 +1,78 @@
+{
+  "id": "RR1-AUTHORITATIVE-TIME-CONTROLS-001",
+  "summary": "Implement Worker-authoritative pause, speed, calendar advance, and auto-pause controls",
+  "milestone": "R1",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "required_reviewers": ["systems_architect", "qa_reviewer"],
+  "risk_level": "R4",
+  "dependencies": ["RR1-READ-MODEL-DELTA-001"],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/src/time-control/**",
+      "apps/web/src/time-controls/**",
+      "packages/ui/src/time-controls/**",
+      "tests/rr1-authoritative-time-controls*.test.ts",
+      "tests/rr1-authoritative-time-controls/**",
+      "project/tasks/active/RR1-AUTHORITATIVE-TIME-CONTROLS-001.json",
+      "project/messages/outbox/RR1-AUTHORITATIVE-TIME-CONTROLS-001__*.json",
+      "project/messages/routes/RR1-AUTHORITATIVE-TIME-CONTROLS-001__*.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/src/worker/**",
+      "apps/web/src/commands/**",
+      "apps/desktop/**",
+      "packages/protocol/**",
+      "packages/client-core/**",
+      "packages/save-format/**",
+      "packages/platform/**",
+      "content-source/**",
+      ".github/**",
+      "tools/**",
+      "package.json",
+      "pnpm-lock.yaml",
+      "docs/29-product-recovery-roadmap.md",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Pause, 1x, 2x, and 4x are authoritative Worker state transitions through the established SetSpeed contract; UI labels change only after Worker acknowledgement or read-model update.",
+    "Simulation advance uses fixed deterministic steps and the authoritative calendar, never browser frame count, Date.now, setTimeout elapsed duration, or client-local counters as world time.",
+    "A normal production session can advance at least one complete in-game month and execute scheduled settlement without a debug harness or direct sim-core call.",
+    "Configured decision, error, load, reconnect, or policy conditions auto-pause deterministically with a stable reason exposed in the read model.",
+    "Invalid, stale-session, or out-of-order speed requests are rejected without changing authoritative time state.",
+    "Equivalent command streams and step budgets produce the same calendar, scheduler order, state hash, and auto-pause reason in browser Worker and Node."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-core typecheck",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/ui typecheck",
+    "pnpm --filter web typecheck",
+    "pnpm --filter web test",
+    "pnpm sim:determinism",
+    "pnpm architecture:check",
+    "pnpm exec vitest run tests/rr1-authoritative-time-controls*.test.ts",
+    "pnpm storybook:build",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR1-AUTHORITATIVE-TIME-CONTROLS-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "codex/rr1-authoritative-time-controls-001",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "The Worker/protocol task must define SetSpeed before this task starts; protocol files are not writable here.",
+    "No wall-clock API may enter sim-core."
+  ],
+  "created_at": "2026-07-10T18:20:58.343Z",
+  "updated_at": "2026-07-10T18:20:58.343Z",
+  "human_gate_required": false,
+  "roadmap_source": "docs/29-product-recovery-roadmap.md"
+}
