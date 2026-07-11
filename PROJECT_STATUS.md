@@ -9,12 +9,12 @@
 ## 当前阶段
 
 - 当前前向阶段：**R1 / Authoritative Client Runtime**；R0 已完成且 `R0_GATE=PASS`。
-- 当前任务：`RR1-WEB-WORKER-RUNTIME-001`，状态 `IN_PROGRESS`；client engineer `019f4dc4-40d7-77b2-96d3-0319ca51a714`（Lantern）正在实现生产 Web simulation Worker runtime foundation。
+- 当前任务：`RR1-WEB-WORKER-RUNTIME-001`，状态 `IN_PROGRESS`；三位 client engineer writer 均已无终端 handoff 关闭，Lead 正在本地接手完成生产 Web simulation Worker runtime foundation。
 - 当前分支：`codex/rr1-web-worker-runtime-001`。
 - 当前 main：`origin/main@e6e81419e626f4146b1e54aeea69016db5d20027`（RR1 task graph closure PR #252）。
 - Autonomous Goal Mode：enabled；`human_gate.required=false`。
 - 唯一 active lead：`019f4d4f-3856-7d63-8b33-e1bf1b9be9ca`；原 Lead `019eff50-c69d-7612-a90b-7024a47e0af5` 已按用户要求完成线程交接并停止推进。
-- systems architect 与 QA reviewer 均已完成 RR1 task graph 终端 handoff 并从 active 槽位关闭；当前唯一 R1 实现 writer 为 Lantern/client_engineer。
+- systems architect 与 QA reviewer 均已完成 RR1 task graph 终端 handoff 并从 active 槽位关闭；当前无 active 子 writer，Lead 本地实现完成后仍必须路由 systems_architect 与独立 QA。
 
 ## 最近集成
 
@@ -59,6 +59,6 @@ R0 全部任务已 CLOSED，`R0_GATE=PASS`。受控 R1 task graph 已经 systems
 
 ## 下一动作
 
-1. 等待 Lantern/client_engineer 返回 `RR1-WEB-WORKER-RUNTIME-001` writer REVIEW handoff。
-2. 将 writer handoff 路由给 systems_architect，再按任务要求路由独立 QA。
+1. Lead 完成 `RR1-WEB-WORKER-RUNTIME-001` 最小生产 Worker foundation，并写出 REVIEW handoff。
+2. 将 Lead implementation handoff 路由给 systems_architect，再按任务要求路由独立 QA。
 3. 继续保持保护根 M7 脏工作树不变，并禁止任何未路由的并行 R1 产品实现。
